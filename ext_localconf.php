@@ -20,16 +20,16 @@ $autoexec = static function () {
             SearchController::class => 'index, detail, suggest',
         ]
     );
-        /*
-         * Register icons
-         */
-        /** @var IconRegistry $iconRegistry */
-        $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
-        $iconRegistry->registerIcon(
-            'ext-find-ce-wizard',
-            FontawesomeIconProvider::class,
-            ['name' => 'search']
-        );
+    /*
+     * Register icons
+     */
+    /** @var IconRegistry $iconRegistry */
+    $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
+    $iconRegistry->registerIcon(
+        'ext-find-ce-wizard',
+        FontawesomeIconProvider::class,
+        ['name' => 'search']
+    );
 
     /*
      * Register icons
