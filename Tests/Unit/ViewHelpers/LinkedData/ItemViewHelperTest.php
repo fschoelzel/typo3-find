@@ -27,16 +27,18 @@ namespace Subugoe\Find\Tests\Unit\ViewHelpers\LinkedData;
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 
-use Nimut\TestingFramework\TestCase\ViewHelperBaseTestcase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Subugoe\Find\Tests\Unit\ViewHelpers\MockRenderingContextTrait;
 use Subugoe\Find\ViewHelpers\LinkedData\ItemViewHelper;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 
 /**
  * Tests for the item viewhelper.
  */
-class ItemViewHelperTest extends ViewHelperBaseTestcase
+class ItemViewHelperTest extends UnitTestCase
 {
     use MockRenderingContextTrait;
 
@@ -50,10 +52,7 @@ class ItemViewHelperTest extends ViewHelperBaseTestcase
      */
     protected $templateVariableContainer;
 
-    /**
-     * @return array
-     */
-    public function linkedDataProvider()
+    public static function linkedDataProvider(): array
     {
         return [
             ['hrdr', 'is', 'thirsty', null, null, null, 'hrdr'],
@@ -63,52 +62,43 @@ class ItemViewHelperTest extends ViewHelperBaseTestcase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->fixture = $this->getMockBuilder(ItemViewHelper::class)
-            ->addMethods(['dummy'])
-            ->getMock();
-        $this->templateVariableContainer = $this->getMockBuilder(StandardVariableProvider::class)
-            ->onlyMethods(['add', 'get', 'remove', 'exists'])
-            ->getMock();
+        $this->fixture = $this->getAccessibleMock(ItemViewHelper::class);
+        $this->templateVariableContainer = $this->getAccessibleMock(StandardVariableProvider::class, ['add', 'get', 'remove', 'exists']);
         $this->templateVariableContainer
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('add')
             ->with('hrdr')
             ->willReturn('hrdr');
         $this->templateVariableContainer
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('get')
             ->with('hrdr')
             ->willReturn('hrdr');
         $this->templateVariableContainer
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('remove')
             ->with('hrdr')
             ->willReturn(null);
         $this->templateVariableContainer
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('exists')
             ->with('hrdr')
             ->willReturn(true);
-        $this->injectDependenciesIntoViewHelper($this->fixture);
     }
 
-    /**
-     * @test
-     * @dataProvider linkedDataProvider
-     * @doesNotPerformAssertions
-     **/
+    #[Test]
+    #[DataProvider(methodName: 'linkedDataProvider')]
     public function itemsAreAddedToContainer($subject, $predicate, $object, $objectType, $language, $name, $expected): void
     {
         $this->fixture->setArguments([
-     'subject' => $subject,
-     'predicate' => $predicate,
-     'object' => $object,
-     'objectType' => $objectType,
-     'language' => $language,
-     'name' => $name,
-     ]);
-        $this->fixture->expects(self::once())->method('render')->willReturn($expected);
-        $this->inject($this->fixture, 'templateVariableContainer', $this->getMockBuilder(StandardVariableProvider::class)->getMock());
-        $this->fixture->expects(self::once())->method('initializeArgumentsAndRender')->willReturn($this->fixture);
+            'subject' => $subject,
+            'predicate' => $predicate,
+            'object' => $object,
+            'objectType' => $objectType,
+            'language' => $language,
+            'name' => $name,
+        ]);
+        $this->fixture->render();
+        self::assertSame($this->templateVariableContainer->get('hrdr'), $subject);
     }
 }

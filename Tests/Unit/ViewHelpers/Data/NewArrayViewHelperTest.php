@@ -26,32 +26,21 @@ namespace Subugoe\Find\Tests\Unit\ViewHelpers\Data;
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 
-use Nimut\TestingFramework\TestCase\ViewHelperBaseTestcase;
-use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\Attributes\Test;
 use Subugoe\Find\ViewHelpers\Data\NewArrayViewHelper;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Test for NewArray ViewHelper.
- */
-class NewArrayViewHelperTest extends ViewHelperBaseTestcase
+class NewArrayViewHelperTest extends UnitTestCase
 {
-    /**
-     * @var NewArrayViewHelper
-     */
-    public NewArrayViewHelper|MockObject $fixture;
+    public NewArrayViewHelper $fixture;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->fixture = $this->getMockBuilder(NewArrayViewHelper::class)
-            ->onlyMethods(['renderChildren'])
-            ->getMock();
-        $this->injectDependenciesIntoViewHelper($this->fixture);
+        $this->fixture = new NewArrayViewHelper();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function aNewArrayFromArgumentsIsCorrectlyCreated(): void
     {
         $arguments = [
@@ -68,12 +57,10 @@ class NewArrayViewHelperTest extends ViewHelperBaseTestcase
         ];
 
         $this->fixture->setArguments($arguments);
-        self::assertSame($expected, $this->fixture->initializeArgumentsAndRender());
+        self::assertSame($expected, $this->fixture->render());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function aNewArrayWithoutAnExistingOneIsCreated(): void
     {
         $arguments = [
@@ -88,12 +75,11 @@ class NewArrayViewHelperTest extends ViewHelperBaseTestcase
         ];
 
         $this->fixture->setArguments($arguments);
-        self::assertSame($expected, $this->fixture->initializeArgumentsAndRender());
+
+        self::assertSame($expected, $this->fixture->render());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function aNewArrayWithMultipleEntriesIsCreated(): void
     {
         $arguments = [
@@ -109,12 +95,10 @@ class NewArrayViewHelperTest extends ViewHelperBaseTestcase
         ];
 
         $this->fixture->setArguments($arguments);
-        self::assertSame($expected, $this->fixture->initializeArgumentsAndRender());
+        self::assertSame($expected, $this->fixture->render());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function emptyStringsAsArrayKeysAreConsideredAsKeysAndValues(): void
     {
         $arguments = [
@@ -131,6 +115,6 @@ class NewArrayViewHelperTest extends ViewHelperBaseTestcase
         ];
 
         $this->fixture->setArguments($arguments);
-        self::assertSame($expected, $this->fixture->initializeArgumentsAndRender());
+        self::assertSame($expected, $this->fixture->render());
     }
 }

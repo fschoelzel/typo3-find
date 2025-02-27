@@ -27,23 +27,19 @@ namespace Subugoe\Find\Tests\Unit\ViewHelpers\Format;
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 
-use Nimut\TestingFramework\TestCase\ViewHelperBaseTestcase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Subugoe\Find\ViewHelpers\Format\StripViewHelper;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Tests for the whitespace stripping viewhelper.
- */
-class StripViewHelperTest extends ViewHelperBaseTestcase
+class StripViewHelperTest extends UnitTestCase
 {
     /**
      * @var StripViewHelper
      */
     protected $fixture;
 
-    /**
-     * @return array
-     */
-    public function stringProvider()
+    public static function stringProvider(): array
     {
         return [
             ['a', false, 'a'],
@@ -56,16 +52,11 @@ class StripViewHelperTest extends ViewHelperBaseTestcase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->fixture = $this->getMockBuilder(StripViewHelper::class)
-            ->addMethods(['dummy'])
-            ->getMock();
-        $this->injectDependenciesIntoViewHelper($this->fixture);
+        $this->fixture = new StripViewHelper();
     }
 
-    /**
-     * @test
-     * @dataProvider stringProvider
-     */
+    #[Test]
+    #[DataProvider(methodName: 'stringProvider')]
     public function whitespaceIsCorrectlyRemovedFromString($string, $strip, $expected): void
     {
         $this->fixture->setArguments([

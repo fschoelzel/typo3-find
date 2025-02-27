@@ -29,7 +29,6 @@ namespace Subugoe\Find\Service;
 use Solarium\Client;
 use Solarium\Component\Highlighting\Field;
 use Solarium\Core\Client\Adapter\Curl;
-use Solarium\Core\Client\Adapter\Http;
 use Solarium\Exception\HttpException;
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
@@ -55,7 +54,7 @@ class SolrServiceProvider extends AbstractServiceProvider
 
     protected Query $query;
 
-    public function connect()
+    public function connect(): void
     {
         $currentConnectionSettings = $this->settings['connections'][$this->connectionName]['options'];
         // Upgrading to Solarium >= 5
@@ -67,7 +66,7 @@ class SolrServiceProvider extends AbstractServiceProvider
             'endpoint' => [
                 $this->connectionName => [
                     'host' => $currentConnectionSettings['host'],
-                    'port' => (int) $currentConnectionSettings['port'],
+                    'port' => (int)$currentConnectionSettings['port'],
                     'path' => $currentConnectionSettings['path'],
                     'scheme' => $currentConnectionSettings['scheme'],
                     'core' => $currentConnectionSettings['core'],
@@ -79,7 +78,7 @@ class SolrServiceProvider extends AbstractServiceProvider
         $adapter = new Curl();
         $eventDispatcher = new EventDispatcher();
         if (array_key_exists('timeout', $currentConnectionSettings)) {
-            $adapter->setTimeout((int) $currentConnectionSettings['timeout']);
+            $adapter->setTimeout((int)$currentConnectionSettings['timeout']);
         }
 
         // create a client instance
@@ -153,16 +152,14 @@ class SolrServiceProvider extends AbstractServiceProvider
 
     /**
      * Returns whether extended search should be used or not.
-     *
-     * @return bool
      */
-    public function isExtendedSearch()
+    public function isExtendedSearch(): bool
     {
         $result = false;
 
         if (array_key_exists('extended', $this->requestArguments)) {
             // Show extended search when told so by the »extended« argument.
-            $result = ((bool) $this->requestArguments['extended']);
+            $result = ((bool)$this->requestArguments['extended']);
         } elseif (array_key_exists('q', $this->requestArguments)) {
             foreach ($this->settings['queryFields'] as $fieldInfo) {
                 if (array_key_exists('extended', $fieldInfo)
@@ -172,7 +169,7 @@ class SolrServiceProvider extends AbstractServiceProvider
                     // Check if the request argument is an array itself (appies to field type "Range")
                     if (is_array($this->requestArguments['q'][$fieldInfo['id']])) {
                         foreach ($this->requestArguments['q'][$fieldInfo['id']] as $key => $value) {
-                            if ('' !== $value) {
+                            if ($value !== '') {
                                 $result = true;
                                 break;
                             }
@@ -188,74 +185,58 @@ class SolrServiceProvider extends AbstractServiceProvider
         return $result;
     }
 
-    /**
-     * @param $query
-     */
     public function search($query)
     {
         // TODO: Implement search() method.
     }
 
-    /**
-     * @param string $action
-     */
-    public function setAction($action)
+    public function setAction(string $actionName): void
     {
-        $this->action = $action;
+        $this->action = $actionName;
     }
 
-    /**
-     * @param array $configuration
-     */
-    public function setConfiguration($configuration)
+    public function setConfiguration(array $configuration): void
     {
         $this->configuration = $configuration;
     }
 
-    /**
-     * @param mixed $key
-     * @param mixed $value
-     */
-    public function setConfigurationValue($key, $value)
+    public function setConfigurationValue($key, $value): void
     {
         $this->configuration[$key] = $value;
     }
 
-    /**
-     * @param string $controllerExtensionKey
-     */
-    public function setControllerExtensionKey($controllerExtensionKey)
+    public function setControllerExtensionKey(string $key): void
     {
-        $this->controllerExtensionKey = $controllerExtensionKey;
+        $this->controllerExtensionKey = $key;
     }
 
-    public function setCounter()
+    public function setCounter(): void
     {
         $this->setConfigurationValue('counterStart', $this->counterStart());
         $this->setConfigurationValue('counterEnd', $this->counterEnd());
     }
 
     /**
-     * @param array $arguments
+     * @param array $settings
      */
-    public function suggestQuery($arguments): array
+    public function suggestQuery($settings): array
     {
         $query = $this->getConnection()->createSuggester();
         $results = [];
-        if (array_key_exists('q', $arguments)) {
-            $query->setQuery($arguments['q']);
-            if ($arguments['dictionary']) {
-                $query->setDictionary($arguments['dictionary']);
+        if (array_key_exists('q', $settings)) {
+            $query->setQuery($settings['q']);
+            if ($settings['dictionary']) {
+                $query->setDictionary($settings['dictionary']);
             }
 
-            $this->addFacetFilters($arguments);
+            $this->addFacetFilters($settings);
             $solrResults = $this->getConnection()->execute($query)->getResults();
             foreach ($solrResults as $suggestions) {
                 $results = array_merge($results, $suggestions->getSuggestions());
             }
-        } else {
-            // TODO: Error message in JSON?
         }
+
+        // TODO: Error message in JSON?
 
         return $results;
     }
@@ -277,14 +258,14 @@ class SolrServiceProvider extends AbstractServiceProvider
         foreach ($activeFacets as $facetID => $facets) {
             foreach ($facets as $facetTerm => $facetInfo) {
                 $facetQuery = $this->getFacetQuery($this->getFacetConfig($facetID), $facetTerm);
-                if (array_key_exists('queryStyle', $facetInfo['config']) && 'and' === $facetInfo['config']['queryStyle']) {
+                if (array_key_exists('queryStyle', $facetInfo['config']) && $facetInfo['config']['queryStyle'] === 'and') {
                     // TODO: Do we really use this part of the condition? Can it be removed?
                     // Alternative query style: adding a conjunction to the main query.
                     // Can be useful when using {!join} to filter on the underlying
                     // records instead of the joined ones.
                     $queryString = $this->query->getQuery();
                     if ($queryString) {
-                        $queryString .= ' '.Query::QUERY_OPERATOR_AND.' ';
+                        $queryString .= ' ' . Query::QUERY_OPERATOR_AND . ' ';
                     }
 
                     $queryString .= $facetQuery;
@@ -295,7 +276,7 @@ class SolrServiceProvider extends AbstractServiceProvider
                     // Add tag/key when configured to excludeOwnFilter for this facet.
                     // Do not add it otherwise as the additional {!tag …} prepended to the Solr query
                     // will break usage of {!join …} in the query.
-                    $queryInfo = ['key' => 'facet-'.$facetID.'-'.$facetTerm];
+                    $queryInfo = ['key' => 'facet-' . $facetID . '-' . $facetTerm];
                     if (array_key_exists('excludeOwnFilter', $facetInfo['config']) && $facetInfo['config']['excludeOwnFilter'] && $facetQuery) {
                         $queryInfo['tag'] = $this->tagForFacet($facetID);
                     }
@@ -304,7 +285,7 @@ class SolrServiceProvider extends AbstractServiceProvider
                     // set solr query to exclude all known facet values
                     if (array_key_exists('labelMissing', $facetInfo['config']) && $facetTerm === $facetInfo['config']['labelMissing']) {
                         $this->query->createFilterQuery($queryInfo)
-                            ->setQuery('-'.str_replace('("%s")', '[* TO *]', $facetInfo['config']['query']));
+                            ->setQuery('-' . str_replace('("%s")', '[* TO *]', $facetInfo['config']['query']));
                     } else {
                         $this->query->createFilterQuery($queryInfo)
                             ->setQuery($facetQuery);
@@ -354,7 +335,7 @@ class SolrServiceProvider extends AbstractServiceProvider
                             }
                         }
 
-                        if (array_key_exists('excludeOwnFilter', $facet) && 1 === (int) $facet['excludeOwnFilter']) {
+                        if (array_key_exists('excludeOwnFilter', $facet) && (int)$facet['excludeOwnFilter'] === 1) {
                             $queryForFacet->addExclude($this->tagForFacet($facetID));
                         }
                     } else {
@@ -365,11 +346,11 @@ class SolrServiceProvider extends AbstractServiceProvider
                             ->setSort($facet['sortOrder']);
                     }
 
-                    if (array_key_exists('excludeOwnFilter', $facet) && 1 === $facet['excludeOwnFilter']) {
+                    if (array_key_exists('excludeOwnFilter', $facet) && $facet['excludeOwnFilter'] === 1) {
                         $queryForFacet->addExclude($this->tagForFacet($facetID));
                     }
 
-                    if (array_key_exists('showMissing', $facet) && 1 === $facet['showMissing']) {
+                    if (array_key_exists('showMissing', $facet) && $facet['showMissing'] === 1) {
                         $queryForFacet->setMissing(true);
                     }
                 } else {
@@ -406,7 +387,7 @@ class SolrServiceProvider extends AbstractServiceProvider
     {
         $highlightConfig = SettingsUtility::getMergedSettings('highlight', $this->settings);
 
-        if ($highlightConfig && $highlightConfig['fields'] && [] !== $highlightConfig['fields']) {
+        if ($highlightConfig && $highlightConfig['fields'] && $highlightConfig['fields'] !== []) {
             $highlight = $this->query->getHighlighting();
 
             // Configure highlight queries.
@@ -462,7 +443,7 @@ class SolrServiceProvider extends AbstractServiceProvider
 
                 $queryComponents = [];
                 foreach ($queryWords as $queryWord) {
-                    $queryComponents[] = '('.sprintf($highlightConfig['query'], $queryWord).')';
+                    $queryComponents[] = '(' . sprintf($highlightConfig['query'], $queryWord) . ')';
                 }
 
                 $queryString = implode(' OR ', $queryComponents);
@@ -475,7 +456,7 @@ class SolrServiceProvider extends AbstractServiceProvider
 
             // Configure the fragment length.
             if (array_key_exists('fragsize', $highlightConfig)) {
-                $highlight->setFragSize((int) $highlightConfig['fragsize']);
+                $highlight->setFragSize((int)$highlightConfig['fragsize']);
             }
 
             // Set up alternative fields.
@@ -547,7 +528,7 @@ class SolrServiceProvider extends AbstractServiceProvider
             ksort($this->settings['sort']);
             foreach ($this->settings['sort'] as $sortOptionIndex => $sortOption) {
                 if (array_key_exists('id', $sortOption) && array_key_exists('sortCriteria', $sortOption)) {
-                    $localisationKey = 'LLL:'.$this->settings['languageRootPath'].'locallang-form.xml:input.sort-'.$sortOption['id'];
+                    $localisationKey = 'LLL:' . $this->settings['languageRootPath'] . 'locallang-form.xml:input.sort-' . $sortOption['id'];
                     $localisedLabel = LocalizationUtility::translate(
                         $localisationKey,
                         $this->getControllerExtensionKey()
@@ -558,7 +539,7 @@ class SolrServiceProvider extends AbstractServiceProvider
 
                     $sortOptions['menu'][$sortOption['sortCriteria']] = $localisedLabel;
 
-                    if ('default' === $sortOption['id']) {
+                    if ($sortOption['id'] === 'default') {
                         $sortOptions['default'] = $sortOption['sortCriteria'];
                     }
                 } else {
@@ -590,22 +571,22 @@ class SolrServiceProvider extends AbstractServiceProvider
      */
     protected function addSortStringForQuery(string $sortString): void
     {
-        if ('' !== $sortString) {
+        if ($sortString !== '') {
             $sortCriteria = explode(',', $sortString);
             foreach ($sortCriteria as $sortCriterion) {
                 $sortCriterionParts = explode(' ', $sortCriterion);
-                if (2 === count($sortCriterionParts)) {
+                if (count($sortCriterionParts) === 2) {
                     $sortDirection = Query::SORT_ASC;
-                    if ('desc' === $sortCriterionParts[1]) {
+                    if ($sortCriterionParts[1] === 'desc') {
                         $sortDirection = Query::SORT_DESC;
-                    } elseif ('asc' !== $sortCriterionParts[1]) {
+                    } elseif ($sortCriterionParts[1] !== 'asc') {
                         $this->logger->warning(sprintf('sort criterion »%s«’s sort direction is »%s« It should be »asc« or »desc«. Ignoring it.', $sortCriterion, $sortCriterionParts[1]));
                         continue;
                     }
 
                     $this->query->addSort($sortCriterionParts[0], $sortDirection);
                 } else {
-                    $this->logger->warning('sort criterion »%s« does not have the required form »fieldName [asc|desc]«. Ignoring it.', $sortCriterion);
+                    $this->logger->warning('sort criterion »%s« does not have the required form »fieldName [asc|desc]«. Ignoring it.', [$sortCriterion]);
                 }
             }
         }
@@ -618,7 +599,7 @@ class SolrServiceProvider extends AbstractServiceProvider
     {
         if (!empty($this->settings['additionalFilters'])) {
             foreach ($this->settings['additionalFilters'] as $key => $filterQuery) {
-                $this->query->createFilterQuery('additionalFilter-'.$key)
+                $this->query->createFilterQuery('additionalFilter-' . $key)
                     ->setQuery($filterQuery);
             }
         }
@@ -672,9 +653,9 @@ class SolrServiceProvider extends AbstractServiceProvider
 
         // Process parameters to eliminate empty values
         $queryParameters = [];
-        if (is_array($rawQueryParameters) && [] !== $rawQueryParameters) {
+        if (is_array($rawQueryParameters) && $rawQueryParameters !== []) {
             foreach ($rawQueryParameters as $key => $value) {
-                if (is_array($value) && [] !== array_filter($value)) {
+                if (is_array($value) && array_filter($value) !== []) {
                     $queryParameters[$key] = array_filter($value);
                 } elseif (!empty($value) && !is_array($value)) {
                     $queryParameters[$key] = $value;
@@ -683,7 +664,7 @@ class SolrServiceProvider extends AbstractServiceProvider
         }
 
         $queryComponents = $this->queryComponentsForQueryParameters($queryParameters);
-        $queryString = implode(' '.Query::QUERY_OPERATOR_AND.' ', $queryComponents);
+        $queryString = implode(' ' . Query::QUERY_OPERATOR_AND . ' ', $queryComponents);
 
         $this->query->setQuery($queryString);
 
@@ -699,9 +680,6 @@ class SolrServiceProvider extends AbstractServiceProvider
         $this->addFacetQueries();
     }
 
-    /**
-     * @return string
-     */
     protected function getAction(): ?string
     {
         return $this->action;
@@ -740,9 +718,6 @@ class SolrServiceProvider extends AbstractServiceProvider
         return $this->connection;
     }
 
-    /**
-     * @return string
-     */
     protected function getControllerExtensionKey(): ?string
     {
         return $this->controllerExtensionKey;
@@ -758,17 +733,17 @@ class SolrServiceProvider extends AbstractServiceProvider
      */
     protected function getCount(?array $arguments = null): int
     {
-        if (null === $arguments) {
+        if ($arguments === null) {
             $arguments = $this->getRequestArguments();
         }
 
-        $count = (int) $this->settings['paging']['perPage'];
+        $count = (int)$this->settings['paging']['perPage'];
 
         if (array_key_exists('count', $arguments)) {
-            $count = (int) $this->requestArguments['count'];
+            $count = (int)$this->requestArguments['count'];
         }
 
-        $maxCount = (int) $this->settings['paging']['maximumPerPage'];
+        $maxCount = (int)$this->settings['paging']['maximumPerPage'];
         $count = min([$count, $maxCount]);
 
         $this->setConfigurationValue('count', $count);
@@ -778,8 +753,6 @@ class SolrServiceProvider extends AbstractServiceProvider
 
     /**
      * Returns the facet configuration for the given $id.
-     *
-     * @return array
      */
     protected function getFacetConfig(string $id): ?array
     {
@@ -798,14 +771,12 @@ class SolrServiceProvider extends AbstractServiceProvider
     /**
      * Returns query for the given facet $ID and $term based on the facet’s
      * configuration.
-     *
-     * @return string query string
      */
     protected function getFacetQuery(array $facetConfig, string $queryTerm): ?string
     {
         $queryString = null;
 
-        if ([] !== $facetConfig) {
+        if ($facetConfig !== []) {
             if (array_key_exists('facetQuery', $facetConfig)) {
                 // Facet queries are configured: use one of them.
                 foreach ($facetConfig['facetQuery'] as $facetQueryConfig) {
@@ -815,7 +786,7 @@ class SolrServiceProvider extends AbstractServiceProvider
                     }
                 }
 
-                if (null === $queryString) {
+                if ($queryString === null) {
                     $this->logger->info(
                         sprintf('Results for Facet »%s« with facetQuery ID »%s« were requested, but this facetQuery is not configured. Building a generic facet query instead.', $facetConfig['id'], $queryTerm),
                         [
@@ -827,12 +798,12 @@ class SolrServiceProvider extends AbstractServiceProvider
                 }
             }
 
-            if (null === $queryString) {
+            if ($queryString === null) {
                 // No Facet queries applicable: build the query.
                 if (array_key_exists('query', $facetConfig)) {
                     $queryPattern = $facetConfig['query'];
                 } else {
-                    $queryPattern = ($facetConfig['field'] ?: $facetConfig['id']).':'.'%s';
+                    $queryPattern = ($facetConfig['field'] ?: $facetConfig['id']) . ':%s';
                 }
 
                 // Hack: convert strings »RANGE XX TO YY« Solr style range queries »[XX TO YY]«
@@ -857,16 +828,16 @@ class SolrServiceProvider extends AbstractServiceProvider
      */
     protected function getOffset(?array $arguments = null): int
     {
-        if (null === $arguments) {
+        if ($arguments === null) {
             $arguments = $this->requestArguments;
         }
 
         $offset = 0;
 
         if (array_key_exists('start', $arguments)) {
-            $offset = (int) $arguments['start'];
+            $offset = (int)$arguments['start'];
         } elseif (array_key_exists('page', $arguments)) {
-            $offset = ((int) $arguments['page'] - 1) * $this->getCount();
+            $offset = ((int)$arguments['page'] - 1) * $this->getCount();
         }
 
         $this->setConfigurationValue('offset', $offset);
@@ -874,10 +845,6 @@ class SolrServiceProvider extends AbstractServiceProvider
         return $offset;
     }
 
-    /**
-     * @param $id
-     * @param $arguments
-     */
     protected function getRecordsWithUnderlyingQuery(array $assignments, array $index, $id, $arguments): array
     {
         $connection = $this->getConnection();
@@ -894,7 +861,7 @@ class SolrServiceProvider extends AbstractServiceProvider
                 $document = $resultSet[$index['resultIndexOffset']];
                 if ($document['id'] === $id) {
                     $assignments['document'] = $document;
-                    if (0 !== $index['resultIndexOffset']) {
+                    if ($index['resultIndexOffset'] !== 0) {
                         $assignments['document-previous'] = $resultSet[0];
                         $assignments['document-previous-number'] = $index['previousIndex'] + 1;
                     }
@@ -926,19 +893,13 @@ class SolrServiceProvider extends AbstractServiceProvider
         return $assignments;
     }
 
-    /**
-     * @param $id
-     * @param $assignments
-     *
-     * @return mixed
-     */
     protected function getTheRecordSpecified($id, $assignments)
     {
         $connection = $this->getConnection();
 
         $this->createQuery();
         $escapedID = $this->query->getHelper()->escapeTerm($id);
-        $this->query->setQuery('id:'.$escapedID);
+        $this->query->setQuery('id:' . $escapedID);
         try {
             /** @var Result $selectResults */
             $selectResults = $connection->execute($this->query);
@@ -975,7 +936,7 @@ class SolrServiceProvider extends AbstractServiceProvider
         $queryFields = $this->settings['queryFields'];
         foreach ($queryFields as $fieldInfo) {
             $fieldID = $fieldInfo['id'];
-            if ($fieldID && array_key_exists($fieldID, $queryParameters) && null !== $queryParameters[$fieldID]) {
+            if ($fieldID && array_key_exists($fieldID, $queryParameters) && $queryParameters[$fieldID] !== null) {
                 // Extract array of query terms from the different structures:
                 // a) just a single string (e.g. text field)
                 // b) array of strings (e.g. date range field)
@@ -1016,7 +977,7 @@ class SolrServiceProvider extends AbstractServiceProvider
                 // Escape all arguments unless told not to do so.
                 if (!$fieldInfo['noescape']) {
                     $escapedQueryTerms = [];
-                    if (is_array($queryTerms) && [] !== $queryTerms && count($queryTerms) > 1) {
+                    if (is_array($queryTerms) && $queryTerms !== [] && count($queryTerms) > 1) {
                         foreach ($queryTerms as $key => $term) {
                             if ($fieldInfo['phrase']) {
                                 $escapedQueryTerms[$key] = $this->query->getHelper()->escapePhrase($term);
@@ -1038,14 +999,14 @@ class SolrServiceProvider extends AbstractServiceProvider
                 }
 
                 if (empty($queryFormat)) {
-                    $queryFormat = $fieldID.':%s';
+                    $queryFormat = $fieldID . ':%s';
                 }
 
                 ksort($queryTerms);
 
                 $magicFieldPrefix = '';
 
-                if ((array_key_exists('luceneMatchVersionNumber', $this->settings) && (int) $this->settings['luceneMatchVersionNumber'] < 8) || (!array_key_exists('luceneMatchVersionNumber', $this->settings))) {
+                if ((array_key_exists('luceneMatchVersionNumber', $this->settings) && (int)$this->settings['luceneMatchVersionNumber'] < 8) || (!array_key_exists('luceneMatchVersionNumber', $this->settings))) {
                     $magicFieldPrefix = '_query_:';
                 }
 
@@ -1053,29 +1014,29 @@ class SolrServiceProvider extends AbstractServiceProvider
                     $magicFieldPrefix .= '{!edismax}';
                 }
 
-                if (2 === (int) $fieldInfo['noescape']) {
-                    $chars = explode(',', $fieldInfo['escapechar']);
+                if ((int)$fieldInfo['noescape'] === 2) {
+                    $chars = explode(',', (string)$fieldInfo['escapechar']);
                     foreach ($queryTerms as $key => $term) {
                         foreach ($chars as $char) {
-                            $queryTerms[$key] = str_replace($char, '\\'.$char, $term);
+                            $queryTerms[$key] = str_replace($char, '\\' . $char, $term);
                         }
                     }
 
-                    $queryPart = $magicFieldPrefix.vsprintf($queryFormat, $queryTerms);
-                } elseif (1 === (int) $fieldInfo['noescape']) {
-                    $queryPart = $magicFieldPrefix.vsprintf($queryFormat, $queryTerms);
+                    $queryPart = $magicFieldPrefix . vsprintf($queryFormat, $queryTerms);
+                } elseif ((int)$fieldInfo['noescape'] === 1) {
+                    $queryPart = $magicFieldPrefix . vsprintf($queryFormat, $queryTerms);
                 } else {
-                    $queryPart = $magicFieldPrefix.$this->query->getHelper()->escapePhrase(vsprintf($queryFormat, $queryTerms));
+                    $queryPart = $magicFieldPrefix . $this->query->getHelper()->escapePhrase(vsprintf($queryFormat, $queryTerms));
                 }
 
-                if ('' !== $queryPart && '0' !== $queryPart) {
+                if ($queryPart !== '' && $queryPart !== '0') {
                     $queryComponents[$fieldID] = $queryPart;
                 }
             }
         }
 
         // Ask for all results if there is no query.
-        if ([] === $queryComponents) {
+        if ($queryComponents === []) {
             $queryComponents[] = $this->settings['defaultQuery'];
         }
 
@@ -1102,7 +1063,7 @@ class SolrServiceProvider extends AbstractServiceProvider
             $facetQueries[$facetTerm] = $facetInfo;
         }
 
-        if ([] !== $facetQueries) {
+        if ($facetQueries !== []) {
             $activeFacets[$facetID] = $facetQueries;
         }
     }
@@ -1124,7 +1085,7 @@ class SolrServiceProvider extends AbstractServiceProvider
 
         // Use field list from query parameters or from defaults.
         if (array_key_exists('data-fields', $arguments) && $arguments['data-fields']) {
-            $fields = explode(',', $arguments['data-fields']);
+            $fields = explode(',', (string)$arguments['data-fields']);
         } elseif (array_key_exists('default', $arguments) && $fieldsConfig['default']) {
             $fields = array_values($fieldsConfig['default']);
         }
@@ -1148,7 +1109,7 @@ class SolrServiceProvider extends AbstractServiceProvider
         }
 
         // Only set fields of the query if there is a result. Otherwise use the default setting.
-        if ([] !== $fields) {
+        if ($fields !== []) {
             $this->query->setFields($fields);
         }
     }
@@ -1176,7 +1137,7 @@ class SolrServiceProvider extends AbstractServiceProvider
             $sortString = $arguments['sort'];
         } elseif (!empty($this->settings['sort'])) {
             foreach ($this->settings['sort'] as $sortSetting) {
-                if ('default' === $sortSetting['id']) {
+                if ($sortSetting['id'] === 'default') {
                     $sortString = $sortSetting['sortCriteria'];
                     break;
                 }
@@ -1192,13 +1153,13 @@ class SolrServiceProvider extends AbstractServiceProvider
      */
     protected function tagForFacet(string $facetID): string
     {
-        return 'facet-'.$facetID;
+        return 'facet-' . $facetID;
     }
 
     /*
      * Set configured main query operator. Defaults to 'AND'.
      */
-    private function addDefaultQueryOperator()
+    private function addDefaultQueryOperator(): void
     {
         if (isset($this->settings['defaultQueryOperator'])) {
             $defaultQueryOperator = $this->settings['defaultQueryOperator'];

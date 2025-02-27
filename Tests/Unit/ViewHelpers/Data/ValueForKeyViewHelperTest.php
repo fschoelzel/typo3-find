@@ -26,14 +26,12 @@ namespace Subugoe\Find\Tests\Unit\ViewHelpers\Data;
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 
-use Nimut\TestingFramework\TestCase\ViewHelperBaseTestcase;
+use PHPUnit\Framework\Attributes\Test;
 use Subugoe\Find\Tests\Unit\ViewHelpers\MockRenderingContextTrait;
 use Subugoe\Find\ViewHelpers\Data\ValueForKeyViewHelper;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Test for ValueForKey ViewHelper.
- */
-class ValueForKeyViewHelperTest extends ViewHelperBaseTestcase
+class ValueForKeyViewHelperTest extends UnitTestCase
 {
     use MockRenderingContextTrait;
 
@@ -46,15 +44,11 @@ class ValueForKeyViewHelperTest extends ViewHelperBaseTestcase
     {
         parent::setUp();
 
-        $this->fixture = $this->getMockBuilder(ValueForKeyViewHelper::class)->onlyMethods(['renderChildren'])->getMock();
-        $this->injectDependenciesIntoViewHelper($this->fixture);
+        $this->fixture = $this->getAccessibleMock(ValueForKeyViewHelper::class, ['renderChildren']);
         $this->createRenderingContextMock();
-        $this->inject($this->fixture, 'renderingContext', $this->renderingContextMock);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function keyPicksTheRightValueFromTheArray()
     {
         $array = [
@@ -71,9 +65,7 @@ class ValueForKeyViewHelperTest extends ViewHelperBaseTestcase
         self::assertSame('b', $this->fixture->initializeArgumentsAndRender());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function resultIsCorrectlyInterpretedAsJsonFromASimpleValue()
     {
         $array = [
@@ -91,9 +83,7 @@ class ValueForKeyViewHelperTest extends ViewHelperBaseTestcase
         self::assertSame('b', $this->fixture->initializeArgumentsAndRender());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function resultIsCorrectlyInterpretedAsTextFromASimpleValue()
     {
         $array = [
@@ -111,9 +101,7 @@ class ValueForKeyViewHelperTest extends ViewHelperBaseTestcase
         self::assertSame('b', $this->fixture->initializeArgumentsAndRender());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function providingANonexistingKeyReturnsNull()
     {
         $array = [

@@ -26,14 +26,15 @@ namespace Subugoe\Find\Tests\Unit\ViewHelpers\Find;
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 
-use Nimut\TestingFramework\TestCase\ViewHelperBaseTestcase;
+use PHPUnit\Framework\Attributes\Test;
 use Subugoe\Find\Tests\Unit\ViewHelpers\MockRenderingContextTrait;
 use Subugoe\Find\ViewHelpers\Find\FacetLinkArgumentsViewHelper;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Test for FacetLinkArguments ViewHelper.
  */
-class FacetLinkArgumentsViewHelperTest extends ViewHelperBaseTestcase
+class FacetLinkArgumentsViewHelperTest extends UnitTestCase
 {
     use MockRenderingContextTrait;
 
@@ -45,15 +46,10 @@ class FacetLinkArgumentsViewHelperTest extends ViewHelperBaseTestcase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->fixture = $this->getMockBuilder(FacetLinkArgumentsViewHelper::class)
-            ->addMethods(['dummy'])
-            ->getMock();
-        $this->injectDependenciesIntoViewHelper($this->fixture);
+        $this->fixture = new FacetLinkArgumentsViewHelper();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function filterIsCorrectlyRemovedOnTextQueries()
     {
         $this->fixture->setArguments([
@@ -67,9 +63,7 @@ class FacetLinkArgumentsViewHelperTest extends ViewHelperBaseTestcase
         self::assertEquals('tx_find_find[facet][title]', $result[0]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function filterIsCorrectlyAddedOnTextQueries()
     {
         $this->fixture->setArguments([

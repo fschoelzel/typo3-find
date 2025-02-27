@@ -48,12 +48,9 @@ class SearchController extends ActionController
 
     protected ?object $searchProvider = null;
 
-    private LoggerInterface $logger;
+    private readonly LoggerInterface $logger;
 
-    public function __construct(LogManagerInterface $logManager)
-    {
-        $this->logger = $logManager->getLogger('find');
-    }
+    public function __construct(private readonly LogManagerInterface $logManager, private readonly AssetCollector $assetCollector) {}
 
     /**
      * @throws NoSuchArgumentException
@@ -68,12 +65,11 @@ class SearchController extends ActionController
             $underlyingQueryScriptTagContent = FrontendUtility::addQueryInformationAsJavaScript(
                 $underlyingQueryInfo['q'],
                 $this->settings,
-                (int) $underlyingQueryInfo['position'],
+                (int)$underlyingQueryInfo['position'],
                 $arguments
             );
 
-            GeneralUtility::makeInstance(AssetCollector::class)
-                ->addInlineJavaScript('underlyingQueryVar', $underlyingQueryScriptTagContent, ['type' => 'text/javascript'], ['priority' => true]);
+            $this - \ASSETCOLLECTOR->addInlineJavaScript('underlyingQueryVar', $underlyingQueryScriptTagContent, ['type' => 'text/javascript'], ['priority' => true]);
         }
 
         $this->addStandardAssignments();
@@ -87,9 +83,6 @@ class SearchController extends ActionController
         return $this->htmlResponse();
     }
 
-    /**
-     * Index Action.
-     */
     public function indexAction(): ResponseInterface
     {
         if (array_key_exists('id', $this->requestArguments)) {
@@ -158,7 +151,7 @@ class SearchController extends ActionController
         $this->searchProvider->setConfigurationValue('extendedSearch', $this->searchProvider->isExtendedSearch());
         $this->searchProvider->setConfigurationValue(
             'uid',
-            $this->configurationManager->getContentObject()->data['uid']
+            $this->request->getAttribute('currentContentObject')->data['uid']
         );
         $this->searchProvider->setConfigurationValue('prefixID', 'tx_find_find');
         $this->searchProvider->setConfigurationValue('pageTitle', $GLOBALS['TSFE']->page['title']);
@@ -172,8 +165,11 @@ class SearchController extends ActionController
         $connectionConfiguration = $this->settings['connections'][$activeConnection];
 
         /* @var ServiceProviderInterface $searchProvider */
-        $this->searchProvider = GeneralUtility::makeInstance($connectionConfiguration['provider'], $activeConnection,
-            $this->settings);
+        $this->searchProvider = GeneralUtility::makeInstance(
+            $connectionConfiguration['provider'],
+            $activeConnection,
+            $this->settings
+        );
         $this->searchProvider->connect();
     }
 }

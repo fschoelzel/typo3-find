@@ -26,27 +26,26 @@ namespace Subugoe\Find\Tests\Unit\ViewHelpers\Format;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
-use Nimut\TestingFramework\TestCase\ViewHelperBaseTestcase;
-use PHPUnit\Framework\MockObject\MockObject;
+
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Subugoe\Find\ViewHelpers\Format\RegexpViewHelper;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Regexp viewhelper test.
  */
-class RegexpViewHelperTest extends ViewHelperBaseTestcase
+class RegexpViewHelperTest extends UnitTestCase
 {
-    /**
-     * @var RegexpViewHelper
-     */
-    protected RegexpViewHelper|MockObject $fixture;
+    protected RegexpViewHelper $fixture;
 
-    public function regexProvider(): array
+    public static function regexProvider(): array
     {
         return [
             ['behedeti', '/hed/', 'hrdr', false, 'behrdreti'],
             ['behedeti', '/beh/', 'hrdr', false, 'hrdredeti'],
             ['horus', '|ho|', 'sy', false, 'syrus'],
-            ['ClubMate667', '/[a-zA-Z]*[0-9]*/', 'Cola', false, 'ColaCola'],
+            ['ClubMate667', '/[a-zA-Z]*\d*/', 'Cola', false, 'ColaCola'],
             ['ClubMate667', '/\w*/', 'Cola', false, 'ColaCola'],
 
             ['ClubMate667', '\w*', 'Cola', true, 'ColaCola'],
@@ -60,7 +59,7 @@ class RegexpViewHelperTest extends ViewHelperBaseTestcase
             ['behedeti', '/hed/', null, false, 1],
             ['behedeti', '/beh/', null, false, 1],
             ['horus', '|ho|', null, false, 1],
-            ['ClubMate667', '/[a-zA-Z]*[0-9]*/', null, false, 1],
+            ['ClubMate667', '/[a-zA-Z]*\d*/', null, false, 1],
             ['ClubMate667', '/\w*/', null, false, 1],
         ];
     }
@@ -68,16 +67,11 @@ class RegexpViewHelperTest extends ViewHelperBaseTestcase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->fixture = $this->getMockBuilder(RegexpViewHelper::class)
-            ->addMethods(['dummy'])
-            ->getMock();
-        $this->injectDependenciesIntoViewHelper($this->fixture);
+        $this->fixture = new RegexpViewHelper();
     }
 
-    /**
-     * @test
-     * @dataProvider regexProvider
-     */
+    #[Test]
+    #[DataProvider(methodName: 'regexProvider')]
     public function stringIsReplaced($string, $match, $replace, $useMBEreg, $expected): void
     {
         $this->fixture->setArguments([

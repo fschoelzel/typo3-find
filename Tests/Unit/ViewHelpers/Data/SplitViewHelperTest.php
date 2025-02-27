@@ -26,13 +26,11 @@ namespace Subugoe\Find\Tests\Unit\ViewHelpers\Data;
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 
-use Nimut\TestingFramework\TestCase\ViewHelperBaseTestcase;
+use PHPUnit\Framework\Attributes\Test;
 use Subugoe\Find\ViewHelpers\Data\SplitViewHelper;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Test for Split ViewHelper.
- */
-class SplitViewHelperTest extends ViewHelperBaseTestcase
+class SplitViewHelperTest extends UnitTestCase
 {
     /**
      * @var SplitViewHelper
@@ -43,15 +41,10 @@ class SplitViewHelperTest extends ViewHelperBaseTestcase
     {
         parent::setUp();
 
-        $this->fixture = $this->getMockBuilder(SplitViewHelper::class)
-            ->addMethods(['dummy'])
-            ->getMock();
-        $this->injectDependenciesIntoViewHelper($this->fixture);
+        $this->fixture = new SplitViewHelper();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function stringIsExplodedCorrectlyWithoutPassedSeparator()
     {
         $string = 'hrdr, behedeti, horus';
@@ -65,9 +58,7 @@ class SplitViewHelperTest extends ViewHelperBaseTestcase
         self::assertSame($expected, $this->fixture->initializeArgumentsAndRender());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function stringIsExplodedCorrectlyWithPassedSeparator()
     {
         $string = 'hrdr, behedeti, horus';
@@ -82,9 +73,7 @@ class SplitViewHelperTest extends ViewHelperBaseTestcase
         self::assertSame($expected, $this->fixture->initializeArgumentsAndRender());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function stringIsExplodedCorrectlyWithNonDefaultSeparator()
     {
         $string = 'hrdrhorus behedetihorus horus';
@@ -98,9 +87,7 @@ class SplitViewHelperTest extends ViewHelperBaseTestcase
         self::assertSame($expected, $this->fixture->initializeArgumentsAndRender());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function emptyArrayIsReturnedWhenPassingIt()
     {
         $string = '';

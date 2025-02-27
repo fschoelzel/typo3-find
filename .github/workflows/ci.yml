@@ -11,9 +11,8 @@ jobs:
       fail-fast: false
       matrix:
         env:
-          - { php: 8.0 }
-          - { php: 8.1 }
           - { php: 8.2 }
+          - { php: 8.3 }
 
     env: ${{ matrix.env }}
 
@@ -42,7 +41,6 @@ jobs:
 
       - name: Check coding style
         run: composer lint
-        if: ${{ matrix.env.php == '8.1' }}
 
       - name: Run Unit Tests
         run: |

@@ -3,32 +3,24 @@
 declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\Set\ValueObject\SetList;
-use Ssch\TYPO3Rector\FileProcessor\TypoScript\Rector\v10\v0\ExtbasePersistenceTypoScriptRector;
 use Ssch\TYPO3Rector\Set\Typo3LevelSetList;
-use Ssch\TYPO3Rector\Set\Typo3SetList;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->paths([
-        __DIR__.'/Classes',
-        __DIR__.'/Tests',
-        __DIR__.'/Configuration',
-        __DIR__.'/Resources',
-        __DIR__.'/*.php',
+return RectorConfig::configure()
+    ->withPhpSets()
+    ->withPreparedSets(codeQuality: true, codingStyle: true)
+    ->withSkip([
+        __DIR__ . '/.Build/vendor',
+        __DIR__ . '/var',
+        __DIR__ . '/*.cache',
+    ])
+    ->withPaths([
+        __DIR__ . '/Classes',
+        __DIR__ . '/Tests',
+        __DIR__ . '/Configuration',
+        __DIR__ . '/Resources',
+        __DIR__ . '/*.php',
+    ])
+    ->withSets([
+        SetList::PHP_82,
+        Typo3LevelSetList::UP_TO_TYPO3_12,
     ]);
-
-    $rectorConfig->skip([
-        __DIR__.'/.Build/vendor',
-        __DIR__.'/var',
-        __DIR__.'/*.cache',
-        ExtbasePersistenceTypoScriptRector::class,
-    ]);
-
-    // Define what rule sets will be applied
-    $rectorConfig->sets([
-        SetList::CODING_STYLE,
-        SetList::CODE_QUALITY,
-        SetList::PHP_80,
-        Typo3LevelSetList::UP_TO_TYPO3_11,
-        Typo3SetList::TYPOSCRIPT_CONDITIONS_104,
-    ]);
-};

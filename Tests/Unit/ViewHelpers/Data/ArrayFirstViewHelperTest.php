@@ -26,13 +26,14 @@ namespace Subugoe\Find\Tests\Unit\ViewHelpers\Data;
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 
-use Nimut\TestingFramework\TestCase\ViewHelperBaseTestcase;
+use PHPUnit\Framework\Attributes\Test;
 use Subugoe\Find\ViewHelpers\Data\ArrayFirstViewHelper;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Test for ArrayFirst ViewHelper.
  */
-class ArrayFirstViewHelperTest extends ViewHelperBaseTestcase
+class ArrayFirstViewHelperTest extends UnitTestCase
 {
     /**
      * @var ArrayFirstViewHelper
@@ -45,12 +46,9 @@ class ArrayFirstViewHelperTest extends ViewHelperBaseTestcase
         $this->fixture = $this->getMockBuilder(ArrayFirstViewHelper::class)
             ->onlyMethods(['renderChildren'])
             ->getMock();
-        $this->injectDependenciesIntoViewHelper($this->fixture);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isFirstElementOfAnArrayReturned(): void
     {
         $array = ['hrdr', 'horus', 'behedeti'];
@@ -59,9 +57,7 @@ class ArrayFirstViewHelperTest extends ViewHelperBaseTestcase
         self::assertSame('hrdr', $this->fixture->initializeArgumentsAndRender());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function nullIsReturnedOnNullValue(): void
     {
         $array = null;
@@ -70,9 +66,7 @@ class ArrayFirstViewHelperTest extends ViewHelperBaseTestcase
         self::assertNull($this->fixture->initializeArgumentsAndRender());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function nullIsReturnedWhenPassingAStringInsteadOfAnArray(): void
     {
         $array = 'hrdr';
@@ -81,9 +75,7 @@ class ArrayFirstViewHelperTest extends ViewHelperBaseTestcase
         self::assertNull($this->fixture->initializeArgumentsAndRender());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function theValueFromTheFirstArrayIsReturnedOnMultidimensionalArrays()
     {
         $array = ['hrdr' => 'horus', 'behedeti'];
@@ -92,9 +84,7 @@ class ArrayFirstViewHelperTest extends ViewHelperBaseTestcase
         self::assertSame('horus', $this->fixture->initializeArgumentsAndRender());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function anEmptyArrayCausesSomething(): void
     {
         $array = [];

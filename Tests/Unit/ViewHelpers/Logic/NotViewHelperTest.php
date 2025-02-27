@@ -26,21 +26,24 @@ namespace Subugoe\Find\Tests\Unit\ViewHelpers\Logic;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
-use Nimut\TestingFramework\TestCase\ViewHelperBaseTestcase;
+
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Subugoe\Find\ViewHelpers\Logic\NotViewHelper;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Tests for the NOT viewhelper.
  */
-class NotViewHelperTest extends ViewHelperBaseTestcase
+class NotViewHelperTest extends UnitTestCase
 {
     /**
      * @var NotViewHelper
      */
     protected NotViewHelper|MockObject $fixture;
 
-    public function conditionProvider(): array
+    public static function conditionProvider(): array
     {
         return [
             [
@@ -48,7 +51,7 @@ class NotViewHelperTest extends ViewHelperBaseTestcase
                 true,
             ],
             [
-                (bool) 0,
+                (bool)0,
                 true,
             ],
             [
@@ -61,16 +64,11 @@ class NotViewHelperTest extends ViewHelperBaseTestcase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->fixture = $this->getMockBuilder(NotViewHelper::class)
-            ->addMethods(['dummy'])
-            ->getMock();
-        $this->injectDependenciesIntoViewHelper($this->fixture);
+        $this->fixture = new NotViewHelper();
     }
 
-    /**
-     * @test
-     * @dataProvider conditionProvider
-     */
+    #[Test]
+    #[DataProvider(methodName: 'conditionProvider')]
     public function conditionIsMet(bool $conditions, bool $expected): void
     {
         $this->fixture->setArguments([

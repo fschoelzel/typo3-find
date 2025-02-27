@@ -36,11 +36,11 @@ class FrontendUtility
      * Stores information about the active query in the »underlyingQuery« JavaScript variable.
      *
      * @param int|null $position  of the record in the result list
-     * @param array    $arguments overrides $this->requestArguments if set
+     * @param array $arguments overrides $this->requestArguments if set
      *
      * @throws \JsonException
      */
-    public static function addQueryInformationAsJavaScript($query, array $settings, ?int $position = null, $arguments = []): string
+    public static function addQueryInformationAsJavaScript($query, array $settings, ?int $position = null, array $arguments = []): string
     {
         if ($settings['paging']['detailPagePaging']) {
             if (array_key_exists('underlyingQuery', $arguments)) {
@@ -52,7 +52,7 @@ class FrontendUtility
                 $underlyingQuery['facet'] = $arguments['facet'];
             }
 
-            if (null !== $position) {
+            if ($position !== null) {
                 $underlyingQuery['position'] = $position;
             }
 
@@ -66,18 +66,16 @@ class FrontendUtility
                 $underlyingQuery['sort'] = $arguments['sort'];
             }
 
-            return 'var underlyingQuery = '.json_encode($underlyingQuery, JSON_THROW_ON_ERROR).';';
+            return 'var underlyingQuery = ' . json_encode($underlyingQuery, JSON_THROW_ON_ERROR) . ';';
         }
 
         return '';
     }
 
     /**
-     * @param $underlyingQueryInfo
-     *
      * @return array
      */
-    public static function getIndexes($underlyingQueryInfo)
+    public static function getIndexes($underlyingQueryInfo): array
     {
         return ['positionIndex' => $underlyingQueryInfo['position'] - 1, 'previousIndex' => max([$underlyingQueryInfo['position'] - 2, 0]), 'nextIndex' => $underlyingQueryInfo['position'], 'resultIndexOffset' => (0 === $underlyingQueryInfo['position'] - 1) ? 0 : 1];
     }

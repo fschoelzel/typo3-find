@@ -26,7 +26,6 @@ namespace Subugoe\Find\ViewHelpers\Find;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  ******************************************************************************/
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -34,10 +33,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class PageListViewHelper extends AbstractViewHelper
 {
-    /**
-     * Registers own arguments.
-     */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('currentPage', 'int', 'number of the current page', false, 1);
@@ -47,20 +43,14 @@ class PageListViewHelper extends AbstractViewHelper
         $this->registerArgument('minimumGapSize', 'int', 'gaps of fewer items than this are filles', false, 2);
     }
 
-    /**
-     * @return array
-     */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $currentPage = ($arguments['currentPage'] ? (int) $arguments['currentPage'] : 1);
-        $numberOfPages = (int) ceil($arguments['resultCount'] / $arguments['perPage']);
-        $adjacentPages = (int) $arguments['adjacentPages'];
+    public function render(
+    ): array {
+        $currentPage = ($this->arguments['currentPage'] ? (int)$this->arguments['currentPage'] : 1);
+        $numberOfPages = (int)ceil($this->arguments['resultCount'] / $this->arguments['perPage']);
+        $adjacentPages = (int)$this->arguments['adjacentPages'];
         $adjacentFirst = max($currentPage - $adjacentPages, 1);
         $adjacentLast = min($currentPage + $adjacentPages, $numberOfPages);
-        $minimumGapSize = (int) $arguments['minimumGapSize'];
+        $minimumGapSize = (int)$this->arguments['minimumGapSize'];
 
         $pageIndex = 1;
         while ($pageIndex <= $numberOfPages) {
@@ -69,7 +59,7 @@ class PageListViewHelper extends AbstractViewHelper
             if ($pageIndex === $currentPage) {
                 $pageInfo['status'] = 'current';
                 $pageInfo['current'] = true;
-            } elseif ((1 === $pageIndex | $pageIndex === $numberOfPages) !== 0) {
+            } elseif (($pageIndex === 1 | $pageIndex === $numberOfPages) !== 0) {
                 $pageInfo['status'] = 'edge';
             } elseif (abs($pageIndex - $currentPage) <= $adjacentPages) {
                 $pageInfo['status'] = 'adjacent';
@@ -81,7 +71,7 @@ class PageListViewHelper extends AbstractViewHelper
                 $pageInfo['gap'] = true;
             }
 
-            if ('gap' === $pageInfo['status']) {
+            if ($pageInfo['status'] === 'gap') {
                 $pageInfo['text'] = '…';
                 if ($pageIndex < $currentPage) {
                     $pageIndex = $currentPage - $adjacentPages;
@@ -89,7 +79,7 @@ class PageListViewHelper extends AbstractViewHelper
                     $pageIndex = $numberOfPages;
                 }
             } else {
-                $pageInfo['text'] = (string) $pageIndex;
+                $pageInfo['text'] = (string)$pageIndex;
                 ++$pageIndex;
             }
 
@@ -99,7 +89,7 @@ class PageListViewHelper extends AbstractViewHelper
         return [
             'pages' => $pages,
             'current' => $currentPage,
-            'previous' => (1 === $currentPage) ? null : $currentPage - 1,
+            'previous' => ($currentPage === 1) ? null : $currentPage - 1,
             'next' => ($currentPage === $numberOfPages) ? null : $currentPage + 1,
         ];
     }

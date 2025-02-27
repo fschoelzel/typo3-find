@@ -27,9 +27,6 @@ namespace Subugoe\Find\Utility;
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 
-/**
- * Array Helper.
- */
 class ArrayUtility
 {
     /**
@@ -39,15 +36,11 @@ class ArrayUtility
      *
      * Specifically aimed at the __hmac and __referrer keys introduced by Fluid
      * forms as well as the text submitted by empty search form fields.
-     *
-     * @param array $array
-     *
-     * @return array
      */
-    public static function cleanArgumentsArray($array)
+    public static function cleanArgumentsArray(array $array): array
     {
         foreach ($array as $key => &$value) {
-            if (str_starts_with($key, '__') || '' === $value) {
+            if (str_starts_with($key, '__') || $value === '') {
                 unset($array[$key]);
             } elseif (is_array($value)) {
                 self::cleanArgumentsArray($value);

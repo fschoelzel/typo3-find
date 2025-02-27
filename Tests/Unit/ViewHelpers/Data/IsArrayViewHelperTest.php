@@ -26,13 +26,14 @@ namespace Subugoe\Find\Tests\Unit\ViewHelpers\Data;
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 
-use Nimut\TestingFramework\TestCase\ViewHelperBaseTestcase;
+use PHPUnit\Framework\Attributes\Test;
 use Subugoe\Find\ViewHelpers\Data\IsArrayViewHelper;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Test for IsArray ViewHelper.
  */
-class IsArrayViewHelperTest extends ViewHelperBaseTestcase
+class IsArrayViewHelperTest extends UnitTestCase
 {
     /**
      * @var IsArrayViewHelper
@@ -45,30 +46,23 @@ class IsArrayViewHelperTest extends ViewHelperBaseTestcase
         $this->fixture = $this->getMockBuilder(IsArrayViewHelper::class)
             ->onlyMethods(['renderChildren'])
             ->getMock();
-        $this->injectDependenciesIntoViewHelper($this->fixture);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function arrayIsInterpretedAsArray(): void
     {
         $this->fixture->setArguments(['subject' => ['hrdr']]);
         self::assertTrue($this->fixture->initializeArgumentsAndRender());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function intIsNotInterpretedAsArray(): void
     {
         $this->fixture->setArguments(['subject' => 667]);
         self::assertFalse($this->fixture->initializeArgumentsAndRender());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function objectsAreNotInterpretedAsArray(): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -76,18 +70,14 @@ class IsArrayViewHelperTest extends ViewHelperBaseTestcase
         self::assertFalse($this->fixture->initializeArgumentsAndRender());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function stringsAreNotInterpretedAsArray(): void
     {
         $this->fixture->setArguments(['subject' => 'hrdr']);
         self::assertFalse($this->fixture->initializeArgumentsAndRender());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function nullIsNotInterpretedAsArray(): void
     {
         $this->fixture->setArguments(['subject' => null]);

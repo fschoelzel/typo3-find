@@ -29,19 +29,21 @@
     "typo3-ter/find": "self.version"
   },
   "require": {
-    "php": "> 8.0.0 < 8.3.0",
+    "php": "> 8.2.0 < 8.3.0",
     "ext-curl": "*",
     "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-dom": "*",
     "solarium/solarium": ">=6.0 <7.0",
-    "typo3/cms-core": "^11.5",
-    "typo3/cms-felogin": "^11.5"
+    "typo3/cms-core": "^12.4",
+    "typo3/cms-felogin": "^12.4"
   },
   "require-dev": {
-    "nimut/testing-framework": "^6.0",
+    "typo3/testing-framework": "^8.2",
     "friendsofphp/php-cs-fixer": "^3.0",
-    "phpunit/phpunit": "^8.5",
-    "ssch/typo3-rector": "^1.0",
-    "phpspec/prophecy": "^1.15"
+    "phpunit/phpunit": "*",
+    "ssch/typo3-rector": "^3.0",
+    "typo3/coding-standards": "^0.8.0"
   },
   "config": {
     "vendor-dir": ".Build/vendor",
@@ -53,8 +55,8 @@
   },
   "scripts": {
     "post-autoload-dump": [
-      "mkdir -p .Build/Web/typo3conf/ext/",
-      "[ -L .Build/Web/typo3conf/ext/find ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/find"
+      "mkdir -p .Build/public/typo3conf/ext/",
+      "[ -L .Build/public/typo3conf/ext/find ] || ln -snvf ../../../../. .Build/public/typo3conf/ext/find"
     ],
     "rector-lint": "rector process --dry-run",
     "rector-fix": "rector process",
@@ -75,7 +77,7 @@
   "extra": {
     "typo3/cms": {
       "cms-package-dir": "{$vendor-dir}/typo3/cms",
-      "web-dir": ".Build/Web",
+      "web-dir": ".Build/public",
       "extension-key": "find"
     }
   }
