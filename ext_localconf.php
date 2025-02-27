@@ -31,17 +31,6 @@ $autoexec = static function () {
         ['name' => 'search']
     );
 
-    /*
-     * Register icons
-     */
-    /** @var IconRegistry $iconRegistry */
-    $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
-    $iconRegistry->registerIcon(
-        'ext-find-ce-wizard',
-        FontawesomeIconProvider::class,
-        ['name' => 'search']
-    );
-
     ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:find/Configuration/TSconfig/ContentElementWizard.tsconfig">');
 };
 $autoexec();
