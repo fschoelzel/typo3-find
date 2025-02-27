@@ -45,4 +45,4 @@ jobs:
       - name: Run Unit Tests
         run: |
           echo "Running unit tests with $(which php)";
-          .Build/bin/phpunit --colors -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit/;
+          .Build/bin/phpunit --colors Tests/Unit/;
