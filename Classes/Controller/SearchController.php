@@ -46,9 +46,7 @@ class SearchController extends ActionController
 
     protected ?object $searchProvider = null;
 
-    private readonly LoggerInterface $logger;
-
-    public function __construct(private readonly AssetCollector $assetCollector) {}
+    public function __construct(private readonly AssetCollector $assetCollector, private readonly LoggerInterface $logger) {}
 
     /**
      * @throws NoSuchArgumentException|\JsonException
@@ -165,7 +163,8 @@ class SearchController extends ActionController
         $this->searchProvider = GeneralUtility::makeInstance(
             $connectionConfiguration['provider'],
             $activeConnection,
-            $this->settings
+            $this->settings,
+            $this->logger,
         );
         $this->searchProvider->connect();
     }

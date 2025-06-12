@@ -32,8 +32,6 @@ namespace Subugoe\Find\Service;
  */
 interface ServiceProviderInterface
 {
-    public function __construct(string $connectionName, array $settings);
-
     public function connect();
 
     public function getConfiguration();
