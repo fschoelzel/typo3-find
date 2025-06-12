@@ -8,9 +8,7 @@ abstract class AbstractServiceProvider implements ServiceProviderInterface
 {
     protected array $requestArguments = [];
 
-    public function __construct(protected string $connectionName, protected array $settings, protected LoggerInterface $logger)
-    {
-    }
+    public function __construct(protected string $connectionName, protected array $settings, protected LoggerInterface $logger) {}
 
     public function getRequestArguments(): array
     {
