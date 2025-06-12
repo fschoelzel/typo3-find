@@ -104,7 +104,7 @@ class TurtleRenderer extends AbstractRenderer implements RendererInterface
      *
      * @return mixed|string
      */
-    protected function turtleString($item, $usePrefixes = true)
+    protected function turtleString(string $item, $usePrefixes = true): string|array
     {
         $result = '<' . $item . '>';
 

@@ -68,7 +68,7 @@ class XMLViewHelperTest extends UnitTestCase
 
     #[Test]
     #[DataProvider(methodName: 'stringProvider')]
-    public function xmlIsCorrectlyFormatted($string, $htmloutput, $expected): void
+    public function xmlIsCorrectlyFormatted(string $string, bool $htmloutput, string $expected): void
     {
         $this->fixture->method('renderChildren')->willReturn($string);
 

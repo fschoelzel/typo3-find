@@ -50,7 +50,7 @@ class FacetLinkArgumentsViewHelperTest extends UnitTestCase
     }
 
     #[Test]
-    public function filterIsCorrectlyRemovedOnTextQueries()
+    public function filterIsCorrectlyRemovedOnTextQueries(): void
     {
         $this->fixture->setArguments([
             'facetID' => 'title',
@@ -64,7 +64,7 @@ class FacetLinkArgumentsViewHelperTest extends UnitTestCase
     }
 
     #[Test]
-    public function filterIsCorrectlyAddedOnTextQueries()
+    public function filterIsCorrectlyAddedOnTextQueries(): void
     {
         $this->fixture->setArguments([
             'facetID' => 'title',

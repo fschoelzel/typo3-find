@@ -45,7 +45,7 @@ class SplitViewHelperTest extends UnitTestCase
     }
 
     #[Test]
-    public function stringIsExplodedCorrectlyWithoutPassedSeparator()
+    public function stringIsExplodedCorrectlyWithoutPassedSeparator(): void
     {
         $string = 'hrdr, behedeti, horus';
         $expected = ['hrdr', 'behedeti', 'horus'];
@@ -59,7 +59,7 @@ class SplitViewHelperTest extends UnitTestCase
     }
 
     #[Test]
-    public function stringIsExplodedCorrectlyWithPassedSeparator()
+    public function stringIsExplodedCorrectlyWithPassedSeparator(): void
     {
         $string = 'hrdr, behedeti, horus';
         $separator = ', ';
@@ -74,7 +74,7 @@ class SplitViewHelperTest extends UnitTestCase
     }
 
     #[Test]
-    public function stringIsExplodedCorrectlyWithNonDefaultSeparator()
+    public function stringIsExplodedCorrectlyWithNonDefaultSeparator(): void
     {
         $string = 'hrdrhorus behedetihorus horus';
         $separator = 'horus ';
@@ -88,7 +88,7 @@ class SplitViewHelperTest extends UnitTestCase
     }
 
     #[Test]
-    public function emptyArrayIsReturnedWhenPassingIt()
+    public function emptyArrayIsReturnedWhenPassingIt(): void
     {
         $string = '';
         $expected = [''];

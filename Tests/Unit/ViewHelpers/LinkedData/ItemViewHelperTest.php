@@ -88,7 +88,7 @@ class ItemViewHelperTest extends UnitTestCase
 
     #[Test]
     #[DataProvider(methodName: 'linkedDataProvider')]
-    public function itemsAreAddedToContainer($subject, $predicate, $object, $objectType, $language, $name, $expected): void
+    public function itemsAreAddedToContainer(string $subject, string $predicate, string $object, $objectType, $language, $name, string $expected): void
     {
         $this->fixture->setArguments([
             'subject' => $subject,

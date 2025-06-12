@@ -114,6 +114,7 @@ class HighlightFieldViewHelper extends AbstractViewHelper
      *
      * @param array|string $fieldContent content of the field to highlight
      * @param array $arguments
+     * @return array|string
      */
     protected function highlightField(array|string $fieldContent, array $arguments): array|string
     {
@@ -134,8 +135,9 @@ class HighlightFieldViewHelper extends AbstractViewHelper
     /**
      * Returns highlight information for the document and field configured in
      * our arguments.
+     * @return mixed[]
      */
-    protected function getHighlightInfo($arguments)
+    protected function getHighlightInfo(array $arguments): array
     {
         $highlightInfo = [];
         $documentID = $arguments['document'][$arguments['idKey']];
@@ -160,7 +162,7 @@ class HighlightFieldViewHelper extends AbstractViewHelper
      * @param string $fieldString   the string to highlight
      * @param array  $highlightInfo information provided by the index’ highlighter
      */
-    protected function highlightSingleField(string $fieldString, array $highlightInfo, $arguments): ?string
+    protected function highlightSingleField(string $fieldString, array $highlightInfo, array $arguments): ?string
     {
         $result = null;
 

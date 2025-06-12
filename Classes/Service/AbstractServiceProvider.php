@@ -8,10 +8,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 abstract class AbstractServiceProvider implements ServiceProviderInterface
 {
-    /**
-     * @var LogManagerInterface
-     */
-    protected $logger;
+    protected LogManagerInterface $logger;
 
     protected array $requestArguments = [];
 
@@ -23,12 +20,12 @@ abstract class AbstractServiceProvider implements ServiceProviderInterface
     /**
      * @return array
      */
-    public function getRequestArguments()
+    public function getRequestArguments(): array
     {
         return $this->requestArguments;
     }
 
-    public function setRequestArguments(array $requestArguments)
+    public function setRequestArguments(array $requestArguments): void
     {
         $this->requestArguments = $requestArguments;
     }

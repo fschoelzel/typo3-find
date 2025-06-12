@@ -102,7 +102,7 @@ class AndViewHelperTest extends UnitTestCase
 
     #[Test]
     #[DataProvider(methodName: 'conditionProvider')]
-    public function conditionIsTrue($conditions, $expected)
+    public function conditionIsTrue(array $conditions, bool $expected): void
     {
         $this->fixture->setArguments([
             'conditions' => $conditions,

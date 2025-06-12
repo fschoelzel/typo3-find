@@ -49,7 +49,7 @@ class ValueForKeyViewHelperTest extends UnitTestCase
     }
 
     #[Test]
-    public function keyPicksTheRightValueFromTheArray()
+    public function keyPicksTheRightValueFromTheArray(): void
     {
         $array = [
             'a' => 'b',
@@ -66,25 +66,7 @@ class ValueForKeyViewHelperTest extends UnitTestCase
     }
 
     #[Test]
-    public function resultIsCorrectlyInterpretedAsJsonFromASimpleValue()
-    {
-        $array = [
-            'a' => 'b',
-            'b' => 'c',
-        ];
-        $key = 'a';
-
-        $this->fixture->setArguments([
-            'array' => $array,
-            'key' => $key,
-            'format' => 'json',
-        ]);
-
-        self::assertSame('b', $this->fixture->initializeArgumentsAndRender());
-    }
-
-    #[Test]
-    public function resultIsCorrectlyInterpretedAsTextFromASimpleValue()
+    public function resultIsCorrectlyInterpretedAsJsonFromASimpleValue(): void
     {
         $array = [
             'a' => 'b',
@@ -102,7 +84,25 @@ class ValueForKeyViewHelperTest extends UnitTestCase
     }
 
     #[Test]
-    public function providingANonexistingKeyReturnsNull()
+    public function resultIsCorrectlyInterpretedAsTextFromASimpleValue(): void
+    {
+        $array = [
+            'a' => 'b',
+            'b' => 'c',
+        ];
+        $key = 'a';
+
+        $this->fixture->setArguments([
+            'array' => $array,
+            'key' => $key,
+            'format' => 'json',
+        ]);
+
+        self::assertSame('b', $this->fixture->initializeArgumentsAndRender());
+    }
+
+    #[Test]
+    public function providingANonexistingKeyReturnsNull(): void
     {
         $array = [
             'a' => 'b',

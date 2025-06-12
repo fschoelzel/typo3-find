@@ -47,7 +47,7 @@ class FacetIsActiveViewHelperTest extends UnitTestCase
     }
 
     #[Test]
-    public function activeFacetIsCorrectlyRecognized()
+    public function activeFacetIsCorrectlyRecognized(): void
     {
         $arguments = [
             'facetID' => 'horus',
@@ -73,7 +73,7 @@ class FacetIsActiveViewHelperTest extends UnitTestCase
     }
 
     #[Test]
-    public function notActiveFacetsReturnFalse()
+    public function notActiveFacetsReturnFalse(): void
     {
         $arguments = [
             'facetID' => 'behedeti',

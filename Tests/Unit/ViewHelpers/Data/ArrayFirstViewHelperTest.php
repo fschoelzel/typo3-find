@@ -38,7 +38,7 @@ class ArrayFirstViewHelperTest extends UnitTestCase
     /**
      * @var ArrayFirstViewHelper
      */
-    public $fixture;
+    public \PHPUnit\Framework\MockObject\MockObject $fixture;
 
     protected function setUp(): void
     {
@@ -76,7 +76,7 @@ class ArrayFirstViewHelperTest extends UnitTestCase
     }
 
     #[Test]
-    public function theValueFromTheFirstArrayIsReturnedOnMultidimensionalArrays()
+    public function theValueFromTheFirstArrayIsReturnedOnMultidimensionalArrays(): void
     {
         $array = ['hrdr' => 'horus', 'behedeti'];
         $this->fixture->setArguments(['array' => $array]);

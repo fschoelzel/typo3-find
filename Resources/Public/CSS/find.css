@@ -20,6 +20,15 @@
   --textB: #555;
 }
 
+.tx-find .icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+
 .tx_find .clear {
   clear: both;
   display: block;

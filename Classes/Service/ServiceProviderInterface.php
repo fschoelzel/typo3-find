@@ -58,5 +58,5 @@ interface ServiceProviderInterface
 
     public function setRequestArguments(array $requestArguments);
 
-    public function suggestQuery($settings);
+    public function suggestQuery(array $settings);
 }

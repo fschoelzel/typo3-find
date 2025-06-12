@@ -56,7 +56,7 @@ class TransposeViewHelper extends AbstractViewHelper
         if ($iterationArray && static::identicalLengths($arrays)) {
             $rows = [];
             foreach (array_keys($iterationArray) as $rowIndex) {
-                $row = array_map(fn($array) => $array[$rowIndex], $arrays);
+                $row = array_map(fn(array $array): mixed => $array[$rowIndex], $arrays);
 
                 $rows[] = $row;
             }

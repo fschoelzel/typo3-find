@@ -9,7 +9,7 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
 defined('TYPO3') || exit;
 
-$autoexec = static function () {
+$autoexec = static function (): void {
     ExtensionUtility::configurePlugin(
         'Find',
         'Find',

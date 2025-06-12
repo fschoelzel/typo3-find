@@ -38,7 +38,7 @@ class IsArrayViewHelperTest extends UnitTestCase
     /**
      * @var IsArrayViewHelper
      */
-    public $fixture;
+    public \PHPUnit\Framework\MockObject\MockObject $fixture;
 
     protected function setUp(): void
     {

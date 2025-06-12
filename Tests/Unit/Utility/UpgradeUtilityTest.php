@@ -65,7 +65,7 @@ class UpgradeUtilityTest extends TestCase
 
     #[Test]
     #[DataProvider(methodName: 'settingsProvider')]
-    public function configurationIsAutomaticallyUpgraded(array $settings, $expected): void
+    public function configurationIsAutomaticallyUpgraded(array $settings, array $expected): void
     {
         self::assertSame($expected, UpgradeUtility::handleSolariumUpgrade($settings));
     }

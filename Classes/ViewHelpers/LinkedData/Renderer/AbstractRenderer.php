@@ -48,7 +48,7 @@ abstract class AbstractRenderer
         return $instance;
     }
 
-    public function setPrefixes($prefixes): void
+    public function setPrefixes(array $prefixes): void
     {
         $this->prefixes = $prefixes;
     }

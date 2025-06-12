@@ -49,7 +49,7 @@ class JoinViewHelperTest extends UnitTestCase
     }
 
     #[Test]
-    public function arrayIsJoinedAsCommaSeparatedValue()
+    public function arrayIsJoinedAsCommaSeparatedValue(): void
     {
         $array = ['hrdr', 'behedeti', 'chub'];
         $separator = ',';
@@ -64,7 +64,7 @@ class JoinViewHelperTest extends UnitTestCase
     }
 
     #[Test]
-    public function arrayIsJoinedWithNonAsciiCharacter()
+    public function arrayIsJoinedWithNonAsciiCharacter(): void
     {
         $array = ['hrdr', 'behedeti', 'chub'];
         $separator = '€';
@@ -79,7 +79,7 @@ class JoinViewHelperTest extends UnitTestCase
     }
 
     #[Test]
-    public function arrayIsJoinedWithMoreThanOneCharacter()
+    public function arrayIsJoinedWithMoreThanOneCharacter(): void
     {
         $array = ['hrdr', 'behedeti', 'chub'];
         $separator = '€$';
@@ -94,7 +94,7 @@ class JoinViewHelperTest extends UnitTestCase
     }
 
     #[Test]
-    public function arrayWithOneElementIsNotPostfixedWithSeparator()
+    public function arrayWithOneElementIsNotPostfixedWithSeparator(): void
     {
         $array = ['hrdr'];
         $separator = '€$';
@@ -109,7 +109,7 @@ class JoinViewHelperTest extends UnitTestCase
     }
 
     #[Test]
-    public function emptyArrayResultsInEmptyString()
+    public function emptyArrayResultsInEmptyString(): void
     {
         $array = [];
         $separator = '€$';

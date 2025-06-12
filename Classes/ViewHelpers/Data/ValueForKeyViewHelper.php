@@ -43,11 +43,8 @@ class ValueForKeyViewHelper extends AbstractViewHelper
         $this->registerArgument('key', 'string', 'The key to extract the value for', true);
     }
 
-    /**
-     * @return string|int|bool|array
-     */
-    public function render(
-    ) {
+    public function render()
+    {
         $result = null;
 
         if ((is_int($this->arguments['key']) || is_string($this->arguments['key'])) && ($this->arguments['array'] && array_key_exists($this->arguments['key'], $this->arguments['array']))) {

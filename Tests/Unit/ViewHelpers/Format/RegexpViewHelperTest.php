@@ -72,7 +72,7 @@ class RegexpViewHelperTest extends UnitTestCase
 
     #[Test]
     #[DataProvider(methodName: 'regexProvider')]
-    public function stringIsReplaced($string, $match, $replace, $useMBEreg, $expected): void
+    public function stringIsReplaced(string $string, string $match, ?string $replace, bool $useMBEreg, string|int $expected): void
     {
         $this->fixture->setArguments([
             'string' => $string,

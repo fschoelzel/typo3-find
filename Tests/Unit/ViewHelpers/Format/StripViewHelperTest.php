@@ -57,7 +57,7 @@ class StripViewHelperTest extends UnitTestCase
 
     #[Test]
     #[DataProvider(methodName: 'stringProvider')]
-    public function whitespaceIsCorrectlyRemovedFromString($string, $strip, $expected): void
+    public function whitespaceIsCorrectlyRemovedFromString(string $string, bool|string|null $strip, string $expected): void
     {
         $this->fixture->setArguments([
             'string' => $string,

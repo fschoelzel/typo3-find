@@ -31,7 +31,7 @@ For the most basic example you need to:
 1.  add the find plug-in to a TYPO3 page
 2.  include the find plug-in’s template in your site/page’s template
 3.  configure your index information in the TypoScript template for that
-    page. At minimum you should set the address of your default Solr
+    page. At minimum, you should set the address of your default Solr
     index and the fields to display in the result list:
     ```
     plugin.tx_find.settings {

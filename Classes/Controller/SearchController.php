@@ -33,14 +33,12 @@ use Psr\Log\LoggerInterface;
 use Subugoe\Find\Service\ServiceProviderInterface;
 use Subugoe\Find\Utility\ArrayUtility;
 use Subugoe\Find\Utility\FrontendUtility;
-use TYPO3\CMS\Core\Log\LogManagerInterface;
 use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\Utility\ArrayUtility as CoreArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
-use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 
 class SearchController extends ActionController
 {
@@ -50,11 +48,10 @@ class SearchController extends ActionController
 
     private readonly LoggerInterface $logger;
 
-    public function __construct(private readonly LogManagerInterface $logManager, private readonly AssetCollector $assetCollector) {}
+    public function __construct(private readonly AssetCollector $assetCollector) {}
 
     /**
-     * @throws NoSuchArgumentException
-     * @throws StopActionException
+     * @throws NoSuchArgumentException|\JsonException
      */
     public function detailAction(string $id): ResponseInterface
     {
@@ -69,7 +66,7 @@ class SearchController extends ActionController
                 $arguments
             );
 
-            $this - \ASSETCOLLECTOR->addInlineJavaScript('underlyingQueryVar', $underlyingQueryScriptTagContent, ['type' => 'text/javascript'], ['priority' => true]);
+            $this->assetCollector->addInlineJavaScript('underlyingQueryVar', $underlyingQueryScriptTagContent, ['type' => 'text/javascript'], ['priority' => true]);
         }
 
         $this->addStandardAssignments();

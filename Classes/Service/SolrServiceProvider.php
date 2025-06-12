@@ -185,7 +185,7 @@ class SolrServiceProvider extends AbstractServiceProvider
         return $result;
     }
 
-    public function search($query)
+    public function search($query): void
     {
         // TODO: Implement search() method.
     }
@@ -216,10 +216,7 @@ class SolrServiceProvider extends AbstractServiceProvider
         $this->setConfigurationValue('counterEnd', $this->counterEnd());
     }
 
-    /**
-     * @param array $settings
-     */
-    public function suggestQuery($settings): array
+    public function suggestQuery(array $settings): array
     {
         $query = $this->getConnection()->createSuggester();
         $results = [];
@@ -893,7 +890,7 @@ class SolrServiceProvider extends AbstractServiceProvider
         return $assignments;
     }
 
-    protected function getTheRecordSpecified($id, $assignments)
+    protected function getTheRecordSpecified(string $id, array $assignments): array
     {
         $connection = $this->getConnection();
 

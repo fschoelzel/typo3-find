@@ -7,7 +7,7 @@ use Ssch\TYPO3Rector\Set\Typo3LevelSetList;
 
 return RectorConfig::configure()
     ->withPhpSets()
-    ->withPreparedSets(codeQuality: true, codingStyle: true)
+    ->withPreparedSets(codeQuality: true, codingStyle: true, typeDeclarations: true)
     ->withSkip([
         __DIR__ . '/.Build/vendor',
         __DIR__ . '/var',

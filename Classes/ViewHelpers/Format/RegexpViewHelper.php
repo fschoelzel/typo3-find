@@ -56,7 +56,7 @@ class RegexpViewHelper extends AbstractViewHelper
         );
     }
 
-    public function render()
+    public function render(): string|array|false|null|int
     {
         $input = $this->arguments['string'];
         if ($input === null) {

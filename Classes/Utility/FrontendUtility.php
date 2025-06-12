@@ -72,10 +72,7 @@ class FrontendUtility
         return '';
     }
 
-    /**
-     * @return array
-     */
-    public static function getIndexes($underlyingQueryInfo): array
+    public static function getIndexes(array $underlyingQueryInfo): array
     {
         return ['positionIndex' => $underlyingQueryInfo['position'] - 1, 'previousIndex' => max([$underlyingQueryInfo['position'] - 2, 0]), 'nextIndex' => $underlyingQueryInfo['position'], 'resultIndexOffset' => (0 === $underlyingQueryInfo['position'] - 1) ? 0 : 1];
     }

@@ -93,7 +93,7 @@ class OrViewHelperTest extends UnitTestCase
 
     #[Test]
     #[DataProvider(methodName: 'conditionProvider')]
-    public function orConditionIsMet($conditions, $expected): void
+    public function orConditionIsMet(array $conditions, bool $expected): void
     {
         $this->fixture->setArguments([
             'conditions' => $conditions,
