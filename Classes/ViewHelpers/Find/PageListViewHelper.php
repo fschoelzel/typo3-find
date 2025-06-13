@@ -53,6 +53,7 @@ class PageListViewHelper extends AbstractViewHelper
         $minimumGapSize = (int)$this->arguments['minimumGapSize'];
 
         $pageIndex = 1;
+        $pages = [];
         while ($pageIndex <= $numberOfPages) {
             $pageInfo = ['number' => $pageIndex, 'current' => false, 'gap' => false];
 
