@@ -37,7 +37,6 @@ use TYPO3\CMS\Core\PageTitle\PageTitleProviderInterface;
 use TYPO3\CMS\Core\Utility\ArrayUtility as CoreArrayUtility;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 
 class SearchController extends ActionController
 {
@@ -99,6 +98,7 @@ class SearchController extends ActionController
         $defaultQuery = $this->searchProvider->getDefaultQuery();
 
         $viewValues = [
+            'underlyingQuery' => $underlyingQueryScriptTagContent,
             'arguments' => $this->searchProvider->getRequestArguments(),
             'config' => $this->searchProvider->getConfiguration(),
         ];

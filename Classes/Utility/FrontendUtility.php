@@ -74,7 +74,7 @@ class FrontendUtility
                 $underlyingQuery['sort'] = $arguments['sort'];
             }
 
-            return 'var underlyingQuery = ' . json_encode($underlyingQuery, JSON_THROW_ON_ERROR) . ';';
+            return 'const underlyingQuery = ' . json_encode($underlyingQuery, JSON_THROW_ON_ERROR) . ';';
         }
 
         return '';
