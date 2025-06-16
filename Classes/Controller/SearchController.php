@@ -34,6 +34,7 @@ use Subugoe\Find\Service\ServiceProviderInterface;
 use Subugoe\Find\Utility\ArrayUtility;
 use Subugoe\Find\Utility\FrontendUtility;
 use TYPO3\CMS\Core\Page\AssetCollector;
+use TYPO3\CMS\Core\PageTitle\PageTitleProviderInterface;
 use TYPO3\CMS\Core\Utility\ArrayUtility as CoreArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
@@ -44,9 +45,9 @@ class SearchController extends ActionController
 {
     protected array $requestArguments = [];
 
-    protected ?object $searchProvider = null;
+    protected ?ServiceProviderInterface $searchProvider = null;
 
-    public function __construct(private readonly AssetCollector $assetCollector, private readonly LoggerInterface $logger) {}
+    public function __construct(private readonly AssetCollector $assetCollector, private readonly LoggerInterface $logger, private readonly PageTitleProviderInterface $pageTitleProvider) {}
 
     /**
      * @throws NoSuchArgumentException|\JsonException
@@ -93,8 +94,7 @@ class SearchController extends ActionController
             $this->searchProvider->getRequestArguments()
         );
 
-        GeneralUtility::makeInstance(AssetCollector::class)
-            ->addInlineJavaScript('underlyingQueryVar', $underlyingQueryScriptTagContent, ['type' => 'text/javascript'], ['priority' => true]);
+        $this->assetCollector->addInlineJavaScript('underlyingQueryVar', $underlyingQueryScriptTagContent, ['type' => 'text/javascript'], ['priority' => true]);
 
         $this->addStandardAssignments();
         $defaultQuery = $this->searchProvider->getDefaultQuery();
@@ -149,13 +149,10 @@ class SearchController extends ActionController
             $this->request->getAttribute('currentContentObject')->data['uid']
         );
         $this->searchProvider->setConfigurationValue('prefixID', 'tx_find_find');
-        $this->searchProvider->setConfigurationValue('pageTitle', $GLOBALS['TSFE']->page['title']);
+        $this->searchProvider->setConfigurationValue('pageTitle', $this->pageTitleProvider->getTitle());
     }
 
-    /**
-     * @param string $activeConnection
-     */
-    protected function initializeConnection($activeConnection): void
+    protected function initializeConnection(string $activeConnection): void
     {
         $connectionConfiguration = $this->settings['connections'][$activeConnection];
 

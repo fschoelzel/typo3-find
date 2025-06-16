@@ -26,6 +26,8 @@ namespace Subugoe\Find\Service;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
+
+use Psr\Log\LoggerInterface;
 use Solarium\Client;
 use Solarium\Component\Highlighting\Field;
 use Solarium\Core\Client\Adapter\Curl;
@@ -40,9 +42,9 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
- * Service provider for solr.
+ * Service provider for Solr.
  */
-class SolrServiceProvider extends AbstractServiceProvider
+class SolrServiceProvider implements ServiceProviderInterface
 {
     protected ?string $action = null;
 
@@ -53,6 +55,20 @@ class SolrServiceProvider extends AbstractServiceProvider
     protected ?string $controllerExtensionKey = null;
 
     protected Query $query;
+
+    protected array $requestArguments = [];
+
+    public function __construct(protected string $connectionName, protected array $settings, protected LoggerInterface $logger) {}
+
+    public function getRequestArguments(): array
+    {
+        return $this->requestArguments;
+    }
+
+    public function setRequestArguments(array $requestArguments): void
+    {
+        $this->requestArguments = $requestArguments;
+    }
 
     public function connect(): void
     {
@@ -525,7 +541,7 @@ class SolrServiceProvider extends AbstractServiceProvider
             ksort($this->settings['sort']);
             foreach ($this->settings['sort'] as $sortOptionIndex => $sortOption) {
                 if (array_key_exists('id', $sortOption) && array_key_exists('sortCriteria', $sortOption)) {
-                    $localisationKey = 'LLL:' . $this->settings['languageRootPath'] . 'locallang-form.xml:input.sort-' . $sortOption['id'];
+                    $localisationKey = 'LLL:' . $this->settings['languageRootPath'] . 'locallang-form.xlf:input.sort-' . $sortOption['id'];
                     $localisedLabel = LocalizationUtility::translate(
                         $localisationKey,
                         $this->getControllerExtensionKey()
