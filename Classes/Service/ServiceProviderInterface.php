@@ -35,8 +35,8 @@ interface ServiceProviderInterface
     public function connect();
 
     public function setConnectionName(string $name): void;
+
     public function setSettings(array $settings): void;
-    public function setConnectionSettings(string $settings): void;
 
     public function getConfiguration();
 

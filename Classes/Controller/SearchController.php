@@ -29,18 +29,15 @@ namespace Subugoe\Find\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 use Psr\Http\Message\ResponseInterface;
-use Psr\Log\LoggerInterface;
 use Subugoe\Find\Service\ServiceProviderInterface;
 use Subugoe\Find\Utility\ArrayUtility;
 use Subugoe\Find\Utility\FrontendUtility;
 use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\PageTitle\PageTitleProviderInterface;
 use TYPO3\CMS\Core\Utility\ArrayUtility as CoreArrayUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 class SearchController extends ActionController
 {
@@ -49,7 +46,7 @@ class SearchController extends ActionController
     public function __construct(private readonly AssetCollector $assetCollector, private readonly ServiceProviderInterface $searchProvider, private readonly PageTitleProviderInterface $pageTitleProvider) {}
 
     /**
-     * @throws NoSuchArgumentException|\JsonException
+     * @throws \JsonException
      */
     public function detailAction(string $id): ResponseInterface
     {
@@ -78,6 +75,9 @@ class SearchController extends ActionController
         return $this->htmlResponse();
     }
 
+    /**
+     * @throws \JsonException
+     */
     public function indexAction(): ResponseInterface
     {
         if (array_key_exists('id', $this->requestArguments)) {
@@ -153,11 +153,8 @@ class SearchController extends ActionController
 
     protected function initializeConnection(string $activeConnection): void
     {
-        $connectionConfiguration = $this->settings['connections'][$activeConnection];
         $this->searchProvider->setConnectionName($activeConnection);
         $this->searchProvider->setSettings($this->settings);
-        $this->searchProvider->setConnectionSettings($connectionConfiguration['provider']);
-        /* @var ServiceProviderInterface $searchProvider */
 
         $this->searchProvider->connect();
     }
