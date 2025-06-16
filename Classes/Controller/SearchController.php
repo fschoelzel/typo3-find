@@ -60,13 +60,15 @@ class SearchController extends ActionController
                 $arguments
             );
 
-            $this->assetCollector->addInlineJavaScript('underlyingQueryVar', $underlyingQueryScriptTagContent, ['type' => 'text/javascript'], ['priority' => true]);
+            $this->assetCollector->addInlineJavaScript('underlyingQueryVar', sprintf('const underlyingQuery = %s;', $underlyingQueryScriptTagContent), ['type' => 'text/javascript'], ['priority' => true]);
+
         }
 
         $this->addStandardAssignments();
 
         $this->view->assignMultiple($detail);
         $this->view->assignMultiple([
+            'underlyingQuery' => $underlyingQueryScriptTagContent,
             'arguments' => $arguments,
             'config' => $this->searchProvider->getConfiguration(),
         ]);
@@ -92,7 +94,7 @@ class SearchController extends ActionController
             $this->searchProvider->getRequestArguments()
         );
 
-        $this->assetCollector->addInlineJavaScript('underlyingQueryVar', $underlyingQueryScriptTagContent, ['type' => 'text/javascript'], ['priority' => true]);
+        $this->assetCollector->addInlineJavaScript('underlyingQueryVar', sprintf('const underlyingQuery = %s;', $underlyingQueryScriptTagContent), ['type' => 'text/javascript'], ['priority' => true]);
 
         $this->addStandardAssignments();
         $defaultQuery = $this->searchProvider->getDefaultQuery();
