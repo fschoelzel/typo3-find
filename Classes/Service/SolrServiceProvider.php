@@ -39,6 +39,7 @@ use Subugoe\Find\Utility\LoggerUtility;
 use Subugoe\Find\Utility\SettingsUtility;
 use Subugoe\Find\Utility\UpgradeUtility;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -58,7 +59,26 @@ class SolrServiceProvider implements ServiceProviderInterface
 
     protected array $requestArguments = [];
 
-    public function __construct(protected string $connectionName, protected array $settings, protected LoggerInterface $logger) {}
+    protected string $connectionName;
+
+    private array $settings;
+
+    private string $connectionSettings;
+
+    public function setConnectionName(string $name): void
+    {
+        $this->connectionName = $name;
+    }
+
+    public function setSettings(array $settings): void
+    {
+        $this->settings = $settings;
+    }
+
+    public function setConnectionSettings(string $settings): void
+    {
+        $this->connectionSettings = $settings;
+    }
 
     public function getRequestArguments(): array
     {

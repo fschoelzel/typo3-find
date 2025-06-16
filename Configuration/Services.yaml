@@ -6,3 +6,6 @@ services:
 
   Subugoe\Find\:
     resource: '../Classes/*'
+
+  Subugoe\Find\Service\ServiceProviderInterface:
+    class: Subugoe\Find\Service\SolrServiceProvider

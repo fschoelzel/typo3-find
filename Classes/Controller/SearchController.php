@@ -40,14 +40,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 class SearchController extends ActionController
 {
     protected array $requestArguments = [];
 
-    protected ?ServiceProviderInterface $searchProvider = null;
-
-    public function __construct(private readonly AssetCollector $assetCollector, private readonly LoggerInterface $logger, private readonly PageTitleProviderInterface $pageTitleProvider) {}
+    public function __construct(private readonly AssetCollector $assetCollector, private readonly ServiceProviderInterface $searchProvider, private readonly PageTitleProviderInterface $pageTitleProvider) {}
 
     /**
      * @throws NoSuchArgumentException|\JsonException
@@ -155,14 +154,11 @@ class SearchController extends ActionController
     protected function initializeConnection(string $activeConnection): void
     {
         $connectionConfiguration = $this->settings['connections'][$activeConnection];
-
+        $this->searchProvider->setConnectionName($activeConnection);
+        $this->searchProvider->setSettings($this->settings);
+        $this->searchProvider->setConnectionSettings($connectionConfiguration['provider']);
         /* @var ServiceProviderInterface $searchProvider */
-        $this->searchProvider = GeneralUtility::makeInstance(
-            $connectionConfiguration['provider'],
-            $activeConnection,
-            $this->settings,
-            $this->logger,
-        );
+
         $this->searchProvider->connect();
     }
 }

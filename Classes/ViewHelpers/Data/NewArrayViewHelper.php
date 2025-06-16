@@ -57,7 +57,7 @@ class NewArrayViewHelper extends AbstractViewHelper
         $this->registerArgument('omitEmptyFields', 'boolean', 'omits empty fields', false, false);
     }
 
-    public function render(): array
+    public function render()
     {
         $result = $this->arguments['array'] ?? [];
 
@@ -69,11 +69,6 @@ class NewArrayViewHelper extends AbstractViewHelper
                         $result[$key] = $value;
                     }
                 }
-            } else {
-                $result = 'newArray View Helper: Number of keys and values must be the same.' . PHP_EOL . print_r(
-                    $this->arguments,
-                    true
-                );
             }
         } else {
             foreach ($this->arguments['values'] as $value) {
