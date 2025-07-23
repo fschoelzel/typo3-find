@@ -50,7 +50,7 @@ class SearchController extends ActionController
     public function detailAction(string $id): ResponseInterface
     {
         $arguments = $this->searchProvider->getRequestArguments();
-        $detail = $this->searchProvider->getDocumentById($id);
+        $detail = $this->searchProvider->getDocumentById($id);        
         if ($this->request->hasArgument('underlyingQuery')) {
             $underlyingQueryInfo = $this->request->getArgument('underlyingQuery');
             $underlyingQueryScriptTagContent = FrontendUtility::addQueryInformationAsJavaScript(
@@ -62,13 +62,13 @@ class SearchController extends ActionController
 
             $this->assetCollector->addInlineJavaScript('underlyingQueryVar', sprintf('const underlyingQuery = %s;', $underlyingQueryScriptTagContent), ['type' => 'text/javascript'], ['priority' => true]);
 
+            $this->view->assign('underlyingQuery', $underlyingQueryScriptTagContent);
         }
 
         $this->addStandardAssignments();
 
         $this->view->assignMultiple($detail);
         $this->view->assignMultiple([
-            'underlyingQuery' => $underlyingQueryScriptTagContent,
             'arguments' => $arguments,
             'config' => $this->searchProvider->getConfiguration(),
         ]);

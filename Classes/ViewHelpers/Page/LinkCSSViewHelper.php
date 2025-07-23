@@ -65,5 +65,7 @@ class LinkCSSViewHelper extends AbstractViewHelper
         if ($CSSFileName !== '' && $CSSFileName !== '0') {
             $this->pageRenderer->addCSSFile($CSSFileName);
         }
+
+        return '';
     }
 }

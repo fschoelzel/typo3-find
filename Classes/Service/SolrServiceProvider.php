@@ -551,7 +551,7 @@ class SolrServiceProvider implements ServiceProviderInterface
     {
         $sortOptions = ['menu' => []];
 
-        if (is_array($this->settings['sort'])) {
+        if (array_key_exists('sort', $this->settings) && is_array($this->settings['sort'])) {
             ksort($this->settings['sort']);
             foreach ($this->settings['sort'] as $sortOptionIndex => $sortOption) {
                 if (array_key_exists('id', $sortOption) && array_key_exists('sortCriteria', $sortOption)) {
@@ -1002,7 +1002,7 @@ class SolrServiceProvider implements ServiceProviderInterface
                 }
 
                 // Escape all arguments unless told not to do so.
-                if (!$fieldInfo['noescape']) {
+                if (array_key_exists('noescape', $fieldInfo) && !$fieldInfo['noescape']) {
                     $escapedQueryTerms = [];
                     if (is_array($queryTerms) && $queryTerms !== [] && count($queryTerms) > 1) {
                         foreach ($queryTerms as $key => $term) {
@@ -1019,9 +1019,9 @@ class SolrServiceProvider implements ServiceProviderInterface
 
                 // Get the query format and insert the query term.
                 $queryFormat = '';
-                if (!$queryAlternate) {
+                if (array_key_exists('query', $fieldInfo) && !$queryAlternate) {
                     $queryFormat = $fieldInfo['query'];
-                } elseif (array_key_exists($queryAlternate, $fieldInfo['queryAlternate'])) {
+                } elseif (array_key_exists('queryAlternate', $fieldInfo)  && array_key_exists($queryAlternate, $fieldInfo['queryAlternate'])) {
                     $queryFormat = $fieldInfo['queryAlternate'][$queryAlternate];
                 }
 
@@ -1037,11 +1037,11 @@ class SolrServiceProvider implements ServiceProviderInterface
                     $magicFieldPrefix = '_query_:';
                 }
 
-                if ($this->settings['features']['eDisMax']) {
+                if (array_key_exists('features', $this->settings) && $this->settings['features']['eDisMax']) {
                     $magicFieldPrefix .= '{!edismax}';
                 }
 
-                if ((int)$fieldInfo['noescape'] === 2) {
+                if (array_key_exists('noescape', $fieldInfo) && (int)$fieldInfo['noescape'] === 2) {
                     $chars = explode(',', (string)$fieldInfo['escapechar']);
                     foreach ($queryTerms as $key => $term) {
                         foreach ($chars as $char) {
@@ -1050,7 +1050,7 @@ class SolrServiceProvider implements ServiceProviderInterface
                     }
 
                     $queryPart = $magicFieldPrefix . vsprintf($queryFormat, $queryTerms);
-                } elseif ((int)$fieldInfo['noescape'] === 1) {
+                } elseif (array_key_exists('noescape', $fieldInfo) && (int)$fieldInfo['noescape'] === 1) {
                     $queryPart = $magicFieldPrefix . vsprintf($queryFormat, $queryTerms);
                 } else {
                     $queryPart = $magicFieldPrefix . $this->query->getHelper()->escapePhrase(vsprintf($queryFormat, $queryTerms));
