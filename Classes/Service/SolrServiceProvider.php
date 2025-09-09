@@ -536,7 +536,7 @@ class SolrServiceProvider extends AbstractServiceProvider
     {
         $sortOptions = ['menu' => []];
 
-        if (is_array($this->settings['sort'])) {
+        if (array_key_exists('sort', $this->settings) && is_array($this->settings['sort'])) {
             ksort($this->settings['sort']);
             foreach ($this->settings['sort'] as $sortOptionIndex => $sortOption) {
                 if (array_key_exists('id', $sortOption) && array_key_exists('sortCriteria', $sortOption)) {
