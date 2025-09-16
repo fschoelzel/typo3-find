@@ -40,7 +40,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
-use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 
 class SearchController extends ActionController
 {
@@ -57,7 +56,7 @@ class SearchController extends ActionController
 
     /**
      * @throws NoSuchArgumentException
-     * @throws StopActionException
+     * @throws \JsonException
      */
     public function detailAction(string $id): ResponseInterface
     {
@@ -66,7 +65,7 @@ class SearchController extends ActionController
         if ($this->request->hasArgument('underlyingQuery')) {
             $underlyingQueryInfo = $this->request->getArgument('underlyingQuery');
             $underlyingQueryScriptTagContent = FrontendUtility::addQueryInformationAsJavaScript(
-                $underlyingQueryInfo['q'],
+                $underlyingQueryInfo['q'] ?? '',
                 $this->settings,
                 (int) $underlyingQueryInfo['position'],
                 $arguments
