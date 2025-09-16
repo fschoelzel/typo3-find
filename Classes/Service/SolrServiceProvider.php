@@ -751,7 +751,7 @@ class SolrServiceProvider extends AbstractServiceProvider
 
         $count = (int) $this->settings['paging']['perPage'];
 
-        if (array_key_exists('count', $arguments)) {
+        if (array_key_exists('count', $arguments) && array_key_exists('count', $this->requestArguments)) {
             $count = (int) $this->requestArguments['count'];
         }
 
