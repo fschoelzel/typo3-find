@@ -87,7 +87,7 @@ class SearchController extends ActionController
     }
 
     /**
-     * Index Action.
+     * @throws \JsonException
      */
     public function indexAction(): ResponseInterface
     {

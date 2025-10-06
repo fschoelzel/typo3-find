@@ -399,7 +399,7 @@ class SolrServiceProvider extends AbstractServiceProvider
     {
         $highlightConfig = SettingsUtility::getMergedSettings('highlight', $this->settings);
 
-        if ($highlightConfig && $highlightConfig['fields'] && [] !== $highlightConfig['fields']) {
+        if ($highlightConfig && array_key_exists('fields', $highlightConfig) && $highlightConfig['fields'] && [] !== $highlightConfig['fields']) {
             $highlight = $this->query->getHighlighting();
 
             // Configure highlight queries.
