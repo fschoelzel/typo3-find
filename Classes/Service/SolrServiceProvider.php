@@ -318,9 +318,10 @@ class SolrServiceProvider extends AbstractServiceProvider
      */
     protected function addFacetQueries(): void
     {
-        $facetConfiguration = $this->settings['facets'];
+        $facetConfigurationActive = isset($this->settings['facets']) ?? false;
 
-        if ($facetConfiguration) {
+        if ($facetConfigurationActive) {
+            $facetConfiguration = $this->settings['facets'];
             $facetSet = $this->query->getFacetSet();
             foreach ($facetConfiguration as $key => $facet) {
                 if (array_key_exists('id', $facet)) {
