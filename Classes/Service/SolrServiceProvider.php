@@ -708,10 +708,12 @@ class SolrServiceProvider extends AbstractServiceProvider
     {
         $activeFacets = [];
 
-        // Add facets activated by default.
-        foreach ($this->settings['facets'] as $facet) {
-            if (!empty($facet['selectedByDefault'])) {
-                $this->setActiveFacetSelectionForID($activeFacets, $facet['id'], $facet['selectedByDefault']);
+        if (array_key_exists('facets', $this->settings)) {
+            // Add facets activated by default.
+            foreach ($this->settings['facets'] as $facet) {
+                if (!empty($facet['selectedByDefault'])) {
+                    $this->setActiveFacetSelectionForID($activeFacets, $facet['id'], $facet['selectedByDefault']);
+                }
             }
         }
 
