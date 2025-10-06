@@ -376,9 +376,9 @@ class SolrServiceProvider extends AbstractServiceProvider
                     );
                 }
             }
-        }
 
-        $this->setConfigurationValue('facets', $facetConfiguration);
+            $this->setConfigurationValue('facets', $facetConfiguration);
+        }
     }
 
     protected function addFeatures(): void
