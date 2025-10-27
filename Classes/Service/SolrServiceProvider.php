@@ -1027,7 +1027,7 @@ class SolrServiceProvider extends AbstractServiceProvider
                     $magicFieldPrefix = '_query_:';
                 }
 
-                if ($this->settings['features']['eDisMax']) {
+                if (array_key_exists('features', $this->settings) && $this->settings['features']['eDisMax']) {
                     $magicFieldPrefix .= '{!edismax}';
                 }
 
