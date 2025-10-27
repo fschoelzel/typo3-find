@@ -992,7 +992,7 @@ class SolrServiceProvider extends AbstractServiceProvider
                 }
 
                 // Escape all arguments unless told not to do so.
-                if (!$fieldInfo['noescape']) {
+                if (array_key_exists('noescape', $fieldInfo) && !$fieldInfo['noescape']) {
                     $escapedQueryTerms = [];
                     if (is_array($queryTerms) && [] !== $queryTerms && count($queryTerms) > 1) {
                         foreach ($queryTerms as $key => $term) {
