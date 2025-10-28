@@ -43,7 +43,7 @@ class XMLViewHelper extends AbstractViewHelper
         $this->registerArgument('htmloutput', 'Boolean', 'Whether to output as HTML', false, false);
     }
 
-    public function render(string $string): string
+    public function render(?string $string = null): string
     {
         $input = $string;
         $XML = new \DOMDocument();

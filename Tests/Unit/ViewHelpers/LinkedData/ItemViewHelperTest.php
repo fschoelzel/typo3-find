@@ -31,7 +31,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
-use Subugoe\Find\Tests\Unit\ViewHelpers\MockRenderingContextTrait;
 use Subugoe\Find\ViewHelpers\LinkedData\ItemViewHelper;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3\TestingFramework\Core\BaseTestCase;
@@ -42,8 +41,6 @@ use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
  */
 class ItemViewHelperTest extends BaseTestCase
 {
-    use MockRenderingContextTrait;
-
     /**
      * @var ItemViewHelper
      */

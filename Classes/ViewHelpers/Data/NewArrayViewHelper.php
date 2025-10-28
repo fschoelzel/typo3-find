@@ -27,7 +27,6 @@ namespace Subugoe\Find\ViewHelpers\Data;
  * THE SOFTWARE.
  ******************************************************************************/
 
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -37,12 +36,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class NewArrayViewHelper extends AbstractViewHelper
 {
-    protected $escapeOutput = false;
-
-    /**
-     * Register arguments.
-     */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('name', 'string', 'name of template variable to assign the result to');
@@ -56,41 +50,36 @@ class NewArrayViewHelper extends AbstractViewHelper
         $this->registerArgument('omitEmptyFields', 'boolean', 'omits empty fields', false, false);
     }
 
-    /**
-     * @return array
-     */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    public function render(): array
     {
-        $result = $arguments['array'] ?? [];
+        $result = $this->arguments['array'] ?? [];
 
-        if ($arguments['keys']) {
-            if (count($arguments['keys']) === count($arguments['values'])) {
-                foreach ($arguments['keys'] as $index => $key) {
-                    $value = $arguments['values'][$index];
-                    if (!$arguments['omitEmptyFields'] || $value) {
+        if ($this->arguments['keys']) {
+            if (count($this->arguments['keys']) === count($this->arguments['values'])) {
+                foreach ($this->arguments['keys'] as $index => $key) {
+                    $value = $this->arguments['values'][$index];
+                    if (!$this->arguments['omitEmptyFields'] || $value) {
                         $result[$key] = $value;
                     }
                 }
             } else {
-                $result = 'newArray View Helper: Number of keys and values must be the same.'.PHP_EOL.print_r($arguments,
-                    true);
+                throw new \RuntimeException('newArray View Helper: Number of keys and values must be the same.', $this->arguments);
             }
         } else {
-            foreach ($arguments['values'] as $value) {
+            foreach ($this->arguments['values'] as $value) {
                 $result[] = $value;
             }
         }
 
-        $variableName = $arguments['name'] ?? null;
+        $variableName = $this->arguments['name'] ?? null;
         if (null !== $variableName) {
-            if ($renderingContext->getVariableProvider()->exists($variableName)) {
-                $renderingContext->getVariableProvider()->remove($variableName);
+            if ($this->renderingContext->getVariableProvider()->exists($variableName)) {
+                $this->renderingContext->getVariableProvider()->remove($variableName);
             }
 
-            $renderingContext->getVariableProvider()->add($variableName, $result);
-            $result = $renderChildrenClosure();
-            if (true !== $arguments['global']) {
-                $renderingContext->getVariableProvider()->remove($variableName);
+            $this->renderingContext->getVariableProvider()->add($variableName, $result);
+            if (true !== $this->arguments['global']) {
+                $this->renderingContext->getVariableProvider()->remove($variableName);
             }
         }
 

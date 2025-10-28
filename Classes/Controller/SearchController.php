@@ -47,7 +47,7 @@ class SearchController extends ActionController
 
     protected ?object $searchProvider = null;
 
-    private LoggerInterface $logger;
+    private readonly LoggerInterface $logger;
 
     public function __construct(LogManagerInterface $logManager)
     {

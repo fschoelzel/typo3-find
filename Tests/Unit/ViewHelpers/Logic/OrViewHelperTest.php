@@ -67,10 +67,10 @@ class OrViewHelperTest extends BaseTestCase
             [
                 [
                     true === 3,
-                    1 === 'hrdr',
+                    1 === 0,
                     'hrdr' === '3',
                     'behedeti' === 'hrdr',
-                    7 == 'hrdr',
+                    7 == 0,
                 ],
                 false,
             ],

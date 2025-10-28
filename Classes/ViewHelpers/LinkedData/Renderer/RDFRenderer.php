@@ -56,7 +56,7 @@ class RDFRenderer extends AbstractRenderer implements RendererInterface
                     $subjectDescription->appendChild($predicateElement);
 
                     if (null === $properties) {
-                        $objectParts = explode(':', $object, 2);
+                        $objectParts = explode(':', (string) $object, 2);
                         if ($this->prefixes[$objectParts[0]] && 2 === count($objectParts)) {
                             $object = $this->prefixes[$objectParts[0]].$objectParts[1];
                         }
@@ -102,7 +102,7 @@ class RDFRenderer extends AbstractRenderer implements RendererInterface
      */
     protected function prefixedName($name, $expand = false)
     {
-        $nameParts = explode(':', $name, 2);
+        $nameParts = explode(':', (string) $name, 2);
         if ($this->prefixes[$nameParts[0]]) {
             $this->usedPrefixes[$nameParts[0]] = true;
             if ($expand && count($nameParts) > 1) {

@@ -56,7 +56,7 @@ class HighlightFieldViewHelperTest extends BaseTestCase
 
     #[Test]
     #[DoesNotPerformAssertions]
-    public function fieldIsCorrectlyHighlighted()
+    public function fieldIsCorrectlyHighlighted(): never
     {
         self::markTestIncomplete('Still something to do with mocking solarium');
     }

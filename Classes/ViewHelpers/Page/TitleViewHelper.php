@@ -70,7 +70,7 @@ class TitleViewHelper extends AbstractViewHelper
         if ($GLOBALS['TSFE']->content) {
             $currentPageTitle = $this->pageTitleProvider->getTitle();
             $GLOBALS['TSFE']->content = preg_replace('/(<title>.*)'.$currentPageTitle.'(.*<\/title>)/',
-                '$1'.$title.'$2', $GLOBALS['TSFE']->content);
+                '$1'.$title.'$2', (string) $GLOBALS['TSFE']->content);
         } else {
             $this->pageTitleProvider->setTitle($title);
         }

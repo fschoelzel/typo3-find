@@ -1031,8 +1031,8 @@ class SolrServiceProvider extends AbstractServiceProvider
                     $magicFieldPrefix .= '{!edismax}';
                 }
 
-                if (2 === (int) $fieldInfo['noescape']) {
-                    $chars = explode(',', $fieldInfo['escapechar']);
+                if (array_key_exists('noescape', $fieldInfo) && 2 === (int) $fieldInfo['noescape']) {
+                    $chars = explode(',', (string) $fieldInfo['escapechar']);
                     foreach ($queryTerms as $key => $term) {
                         foreach ($chars as $char) {
                             $queryTerms[$key] = str_replace($char, '\\'.$char, $term);
@@ -1040,7 +1040,7 @@ class SolrServiceProvider extends AbstractServiceProvider
                     }
 
                     $queryPart = $magicFieldPrefix.vsprintf($queryFormat, $queryTerms);
-                } elseif (1 === (int) $fieldInfo['noescape']) {
+                } elseif (array_key_exists('noescape', $fieldInfo) && 1 === (int) $fieldInfo['noescape']) {
                     $queryPart = $magicFieldPrefix.vsprintf($queryFormat, $queryTerms);
                 } else {
                     $queryPart = $magicFieldPrefix.$this->query->getHelper()->escapePhrase(vsprintf($queryFormat, $queryTerms));
@@ -1102,7 +1102,7 @@ class SolrServiceProvider extends AbstractServiceProvider
 
         // Use field list from query parameters or from defaults.
         if (array_key_exists('data-fields', $arguments) && $arguments['data-fields']) {
-            $fields = explode(',', $arguments['data-fields']);
+            $fields = explode(',', (string) $arguments['data-fields']);
         } elseif (array_key_exists('default', $arguments) && $fieldsConfig['default']) {
             $fields = array_values($fieldsConfig['default']);
         }

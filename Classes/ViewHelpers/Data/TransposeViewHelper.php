@@ -59,7 +59,7 @@ class TransposeViewHelper extends AbstractViewHelper
         $iterationArray = [];
         // Strip non-numeric keys in the value arrays.
         foreach ($arguments['arrays'] as $key => $array) {
-            $iterationArray = (null !== $array) ? $array : [];
+            $iterationArray = $array ?? [];
             $arrays[$key] = array_values($iterationArray);
         }
 

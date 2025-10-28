@@ -27,7 +27,6 @@ namespace Subugoe\Find\Tests\Unit\ViewHelpers\Find;
  * ************************************************************* */
 
 use PHPUnit\Framework\Attributes\Test;
-use Subugoe\Find\Tests\Unit\ViewHelpers\MockRenderingContextTrait;
 use Subugoe\Find\ViewHelpers\Find\PageNumberForResultNumberViewHelper;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3\TestingFramework\Core\BaseTestCase;
@@ -37,8 +36,6 @@ use TYPO3\TestingFramework\Core\BaseTestCase;
  */
 class PageNumberForResultNumberViewHelperTest extends BaseTestCase
 {
-    use MockRenderingContextTrait;
-
     /**
      * @var PageNumberForResultNumberViewHelper
      */

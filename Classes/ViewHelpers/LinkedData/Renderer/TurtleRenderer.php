@@ -53,12 +53,12 @@ class TurtleRenderer extends AbstractRenderer implements RendererInterface
                     if (null === $properties) {
                         $objectString = $this->turtleString($object);
                     } else {
-                        if (!str_contains($object, '"') && !str_contains($object, "\r") && !str_contains($object,
+                        if (!str_contains((string) $object, '"') && !str_contains((string) $object, "\r") && !str_contains((string) $object,
                             "\n")) {
                             $objectString = '"'.$object.'"';
-                        } elseif (!str_contains($object, '"""')) {
+                        } elseif (!str_contains((string) $object, '"""')) {
                             $objectString = '"""'.$object.'"""';
-                        } elseif (!str_contains($object, "'''")) {
+                        } elseif (!str_contains((string) $object, "'''")) {
                             $objectString = "'''".$object."'''";
                         } else {
                             // TODO: Error Handling for could not escape.
@@ -106,14 +106,14 @@ class TurtleRenderer extends AbstractRenderer implements RendererInterface
     {
         $result = '<'.$item.'>';
 
-        $itemParts = explode(':', $item, 2);
+        $itemParts = explode(':', (string) $item, 2);
         $rdfTypeURI = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
         if ($item === $rdfTypeURI
             || (count($itemParts) > 1 && $this->prefixes[$itemParts[0]].$itemParts[1] === $rdfTypeURI)) {
             $result = 'a';
         } elseif ($usePrefixes) {
             foreach ($this->prefixes as $acronym => $prefix) {
-                if (str_starts_with($item, $prefix)) {
+                if (str_starts_with((string) $item, (string) $prefix)) {
                     $result = str_replace($prefix, $acronym.':', $item);
                     $this->usedPrefixes[$acronym] = true;
                     break;
