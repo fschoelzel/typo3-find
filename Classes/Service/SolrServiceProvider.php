@@ -40,7 +40,6 @@ use Subugoe\Find\Utility\FrontendUtility;
 use Subugoe\Find\Utility\LoggerUtility;
 use Subugoe\Find\Utility\SettingsUtility;
 use Subugoe\Find\Utility\UpgradeUtility;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 

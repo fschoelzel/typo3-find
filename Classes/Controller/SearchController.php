@@ -33,9 +33,6 @@ use Psr\Log\LoggerInterface;
 use Subugoe\Find\Service\ServiceProviderInterface;
 use Subugoe\Find\Utility\ArrayUtility;
 use Subugoe\Find\Utility\FrontendUtility;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use TYPO3\CMS\Backend\Search\LiveSearch\SearchProviderInterface;
-use TYPO3\CMS\Core\Log\LogManagerInterface;
 use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\Utility\ArrayUtility as CoreArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -51,10 +48,8 @@ class SearchController extends ActionController
 
     public function __construct(
         private readonly LoggerInterface $logger,
-        private readonly AssetCollector  $assetCollector,
-    )
-    {
-
+        private readonly AssetCollector $assetCollector,
+    ) {
     }
 
     /**

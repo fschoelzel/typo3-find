@@ -34,6 +34,8 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class CountFromSolrViewHelper extends AbstractViewHelper
 {
+    private readonly SolrServiceProvider $solr;
+
     public function __construct()
     {
         $this->solr = GeneralUtility::makeInstance(SolrServiceProvider::class);
