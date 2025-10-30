@@ -65,7 +65,7 @@ class NewArrayViewHelper extends AbstractViewHelper
                     }
                 }
             } else {
-                throw new \RuntimeException('newArray View Helper: Number of keys and values must be the same.', $this->arguments);
+                throw new \RuntimeException('newArray View Helper: Number of keys and values must be the same.', 1761827631);
             }
         } else {
             foreach ($this->arguments['values'] as $value) {

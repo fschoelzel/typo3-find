@@ -18,9 +18,4 @@ $EM_CONF['find'] = [
         'conflicts' => [],
         'suggests' => [],
     ],
-    'autoload' => [
-        'psr-4' => [
-            ['Subugoe\\Find\\' => 'Classes'],
-        ],
-    ],
 ];

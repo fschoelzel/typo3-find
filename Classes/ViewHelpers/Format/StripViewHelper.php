@@ -26,7 +26,6 @@ namespace Subugoe\Find\ViewHelpers\Format;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  ******************************************************************************/
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -36,33 +35,22 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class StripViewHelper extends AbstractViewHelper
 {
-    /**
-     * Registers own arguments.
-     */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('string', 'string',
-            'The string to strip leading and trailing whitespace from; If not given, the tag content is used', false,
-            null);
+            'The string to strip leading and trailing whitespace from; If not given, the tag content is used');
         $this->registerArgument('strip', 'string',
-            'The characters to strip from the string; If not given, defaults to standard PHP whitespace setting', false,
-            null);
+            'The characters to strip from the string; If not given, defaults to standard PHP whitespace setting');
     }
 
-    /**
-     * @return array
-     */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext,
-    ) {
-        $string = $arguments['string'];
+    public function render(): string
+    {
+        $string = $this->arguments['string'];
         if (null === $string) {
-            $string = $renderChildrenClosure();
+            $string = $this->renderChildren();
         }
 
-        return null === $arguments['strip'] ? trim((string) $string) : trim((string) $string, $arguments['strip']);
+        return null === $this->arguments['strip'] ? trim((string) $string) : trim((string) $string, $this->arguments['strip']);
     }
 }

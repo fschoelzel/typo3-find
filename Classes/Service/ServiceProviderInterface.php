@@ -27,12 +27,14 @@ namespace Subugoe\Find\Service;
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 
+use Psr\Log\LoggerInterface;
+
 /**
  * Interface for search engine provider.
  */
 interface ServiceProviderInterface
 {
-    public function __construct(string $connectionName, array $settings);
+    public function __construct(string $connectionName, array $settings, LoggerInterface $logManager);
 
     public function connect();
 

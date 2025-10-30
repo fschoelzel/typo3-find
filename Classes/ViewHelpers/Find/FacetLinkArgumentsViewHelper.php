@@ -28,7 +28,6 @@ namespace Subugoe\Find\ViewHelpers\Find;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -45,10 +44,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class FacetLinkArgumentsViewHelper extends AbstractViewHelper
 {
-    /**
-     * Register arguments.
-     */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('facetID', 'string', 'ID of the facet to determine the selection status of', true);
@@ -63,20 +59,15 @@ class FacetLinkArgumentsViewHelper extends AbstractViewHelper
      * Create the return array required to add/remove the URL parameters by
      * passing it to f.link.action’s »arguments«
      * or »argumentsToBeExcludedFromQueryString«.
-     *
-     * @return array
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext,
-    ) {
+    public function render(): array
+    {
         $result = [];
 
-        $facetID = $arguments['facetID'];
-        $facetTerm = $arguments['facetTerm'];
-        $activeFacets = $arguments['activeFacets'];
-        $mode = $arguments['mode'];
+        $facetID = $this->arguments['facetID'];
+        $facetTerm = $this->arguments['facetTerm'];
+        $activeFacets = $this->arguments['activeFacets'];
+        $mode = $this->arguments['mode'];
         if ('remove' === $mode && $activeFacets) {
             if (array_key_exists($facetID, $activeFacets)) {
                 $itemToRemove = 'tx_find_find[facet]['.$facetID.']';

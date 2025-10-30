@@ -36,15 +36,12 @@ use TYPO3\TestingFramework\Core\BaseTestCase;
  */
 class FacetLinkArgumentsViewHelperTest extends BaseTestCase
 {
-    /**
-     * @var FacetLinkArgumentsViewHelper
-     */
-    public $fixture;
+    public FacetLinkArgumentsViewHelper $fixture;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->fixture = $this->getAccessibleMock(FacetLinkArgumentsViewHelper::class, null);
+        $this->fixture = new FacetLinkArgumentsViewHelper();
         $this->fixture->setRenderingContext($this->getMockBuilder(RenderingContext::class)->disableOriginalConstructor()->getMock());
     }
 
@@ -72,7 +69,7 @@ class FacetLinkArgumentsViewHelperTest extends BaseTestCase
             'mode' => 'add',
         ]);
 
-        $result = $this->fixture->initializeArgumentsAndRender();
+        $result = $this->fixture->render();
         $resultValue = array_keys($result['facet']['title']);
         self::assertEquals('hrdr', $resultValue[0]);
     }

@@ -34,7 +34,7 @@ namespace Subugoe\Find\ViewHelpers\LinkedData\Renderer;
 class RDFRenderer extends AbstractRenderer implements RendererInterface
 {
     /**
-     * @return string
+     * @throws \DOMException
      */
     public function renderItems($items)
     {
@@ -86,7 +86,9 @@ class RDFRenderer extends AbstractRenderer implements RendererInterface
         // Add the prefixes that are used as xmlns.
         foreach (array_keys($this->usedPrefixes) as $prefix) {
             if ($this->prefixes[$prefix]) {
-                $doc->firstChild->setAttribute('xmlns:'.$prefix, $this->prefixes[$prefix]);
+                /** @var \DOMElement $firstElement */
+                $firstElement = $doc->firstChild;
+                $firstElement->setAttribute('xmlns:'.$prefix, $this->prefixes[$prefix]);
             }
         }
 
@@ -95,12 +97,7 @@ class RDFRenderer extends AbstractRenderer implements RendererInterface
         return $doc->saveXML();
     }
 
-    /**
-     * @param bool $expand
-     *
-     * @return string
-     */
-    protected function prefixedName($name, $expand = false)
+    protected function prefixedName($name, bool $expand = false): string
     {
         $nameParts = explode(':', (string) $name, 2);
         if ($this->prefixes[$nameParts[0]]) {

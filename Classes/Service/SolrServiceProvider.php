@@ -28,6 +28,7 @@ namespace Subugoe\Find\Service;
  * ************************************************************* */
 use Solarium\Client;
 use Solarium\Component\Highlighting\Field;
+use Solarium\Component\Result\Analytics\Facet;
 use Solarium\Core\Client\Adapter\Curl;
 use Solarium\Core\Client\Adapter\Http;
 use Solarium\Exception\HttpException;
@@ -55,7 +56,7 @@ class SolrServiceProvider extends AbstractServiceProvider
 
     protected Query $query;
 
-    public function connect()
+    public function connect(): void
     {
         $currentConnectionSettings = $this->settings['connections'][$this->connectionName]['options'];
         // Upgrading to Solarium >= 5
@@ -229,25 +230,25 @@ class SolrServiceProvider extends AbstractServiceProvider
     }
 
     /**
-     * @param array $arguments
+     * @param array $settings
      */
-    public function suggestQuery($arguments): array
+    public function suggestQuery($settings): array
     {
         $query = $this->getConnection()->createSuggester();
         $results = [];
-        if (array_key_exists('q', $arguments)) {
-            $query->setQuery($arguments['q']);
-            if ($arguments['dictionary']) {
-                $query->setDictionary($arguments['dictionary']);
+        if (array_key_exists('q', $settings)) {
+            $query->setQuery($settings['q']);
+            if ($settings['dictionary']) {
+                $query->setDictionary($settings['dictionary']);
             }
 
-            $this->addFacetFilters($arguments);
+            $this->addFacetFilters($settings);
             $solrResults = $this->getConnection()->execute($query)->getResults();
             foreach ($solrResults as $suggestions) {
                 $results = array_merge($results, $suggestions->getSuggestions());
             }
         } else {
-            // TODO: Error message in JSON?
+            $this->logger->error('No query parameter is set');
         }
 
         return $results;
@@ -352,6 +353,7 @@ class SolrServiceProvider extends AbstractServiceProvider
                             $queryForFacet->addExclude($this->tagForFacet($facetID));
                         }
                     } else {
+                        /** @var \Solarium\Component\Facet\Field $queryForFacet */
                         $queryForFacet = $facetSet->createFacetField($facetID);
                         $queryForFacet->setField($facet['field'] ?: $facetID)
                             ->setMinCount($facet['fetchMinimum'])
@@ -400,7 +402,7 @@ class SolrServiceProvider extends AbstractServiceProvider
     {
         $highlightConfig = SettingsUtility::getMergedSettings('highlight', $this->settings);
 
-        if ($highlightConfig && array_key_exists('fields', $highlightConfig) && $highlightConfig['fields'] && [] !== $highlightConfig['fields']) {
+        if ($highlightConfig && array_key_exists('fields', $highlightConfig) && [] !== $highlightConfig['fields']) {
             $highlight = $this->query->getHighlighting();
 
             // Configure highlight queries.
@@ -599,7 +601,7 @@ class SolrServiceProvider extends AbstractServiceProvider
 
                     $this->query->addSort($sortCriterionParts[0], $sortDirection);
                 } else {
-                    $this->logger->warning('sort criterion »%s« does not have the required form »fieldName [asc|desc]«. Ignoring it.', $sortCriterion);
+                    $this->logger->warning(sprintf('sort criterion »%s« does not have the required form »fieldName [asc|desc]«. Ignoring it.', $sortCriterion));
                 }
             }
         }
@@ -728,7 +730,7 @@ class SolrServiceProvider extends AbstractServiceProvider
         return $activeFacets;
     }
 
-    protected function getConnection(): Client
+    public function getConnection(): Client
     {
         return $this->connection;
     }

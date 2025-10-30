@@ -94,7 +94,7 @@ class ItemViewHelperTest extends BaseTestCase
     #[DoesNotPerformAssertions]
     public function itemsAreAddedToContainer($subject, $predicate, $object, $objectType, $language, $name, $expected): void
     {
-        static::markTestSkipped('not yet implemented');
+        self::markTestSkipped('not yet implemented');
 
         $this->fixture->setArguments([
             'subject' => $subject,

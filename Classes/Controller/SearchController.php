@@ -29,7 +29,6 @@ namespace Subugoe\Find\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 use Psr\Http\Message\ResponseInterface;
-use Psr\Log\LoggerInterface;
 use Subugoe\Find\Service\ServiceProviderInterface;
 use Subugoe\Find\Utility\ArrayUtility;
 use Subugoe\Find\Utility\FrontendUtility;
@@ -47,11 +46,9 @@ class SearchController extends ActionController
 
     protected ?object $searchProvider = null;
 
-    private readonly LoggerInterface $logger;
-
-    public function __construct(LogManagerInterface $logManager)
+    public function __construct(private readonly LogManagerInterface $logManager, private readonly AssetCollector $assetCollector)
     {
-        $this->logger = $logManager->getLogger('find');
+        $this->logManager->getLogger('find');
     }
 
     /**
@@ -71,7 +68,7 @@ class SearchController extends ActionController
                 $arguments
             );
 
-            GeneralUtility::makeInstance(AssetCollector::class)
+            $this->assetCollector
                 ->addInlineJavaScript('underlyingQueryVar', $underlyingQueryScriptTagContent, ['type' => 'text/javascript'], ['priority' => true]);
         }
 
@@ -104,7 +101,7 @@ class SearchController extends ActionController
             $this->searchProvider->getRequestArguments()
         );
 
-        GeneralUtility::makeInstance(AssetCollector::class)
+        $this->assetCollector
             ->addInlineJavaScript('underlyingQueryVar', $underlyingQueryScriptTagContent, ['type' => 'text/javascript'], ['priority' => true]);
 
         $this->addStandardAssignments();

@@ -41,7 +41,7 @@ class PathExistsViewHelper extends AbstractViewHelper
         $this->registerArgument('path', 'string', 'the path to check the existence of', true);
     }
 
-    public function render(): string
+    public function render(): bool
     {
         return file_exists(Environment::getPublicPath().'/'.$this->arguments['path']);
     }

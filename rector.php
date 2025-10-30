@@ -17,9 +17,10 @@ return RectorConfig::configure()
         ]
     )
     ->withSkip([__DIR__.'/.Build/vendor',
-            __DIR__.'/var',
-            __DIR__.'/.Build',
-            __DIR__.'/*.cache', ])
+        __DIR__.'/var',
+        __DIR__.'/.Build',
+        __DIR__.'/*.cache',
+        Rector\Transform\Rector\Assign\PropertyFetchToMethodCallRector::class])
     ->withSets([
-            Typo3LevelSetList::UP_TO_TYPO3_12,
-        ]);
+        Typo3LevelSetList::UP_TO_TYPO3_12,
+    ]);

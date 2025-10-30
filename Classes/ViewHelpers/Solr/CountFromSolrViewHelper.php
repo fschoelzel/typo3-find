@@ -22,55 +22,34 @@ namespace Subugoe\Find\ViewHelpers\Solr;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use Solarium\Client;
+
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
+use Subugoe\Find\Service\SolrServiceProvider;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
- * CountFromSolrViewHelper.
- *
- * View Helper to return the number of documents for a specific query
+ * View Helper to return the number of documents for a specific query.
  */
 class CountFromSolrViewHelper extends AbstractViewHelper
 {
-    public array $configuration;
-
-    /**
-     * @var Client
-     */
-    protected $solr;
-
-    public function initialize()
+    public function __construct(private readonly SolrServiceProvider $solr)
     {
-        $configuration = [
-            'endpoint' => [
-                'localhost' => [
-                    'host' => $this->templateVariableContainer->get('settings')['connection']['host'],
-                    'port' => (int) $this->templateVariableContainer->get('settings')['connection']['port'],
-                    'path' => $this->templateVariableContainer->get('settings')['connection']['path'],
-                    'timeout' => $this->templateVariableContainer->get('settings')['connection']['timeout'],
-                    'scheme' => $this->templateVariableContainer->get('settings')['connection']['scheme'],
-                ],
-            ],
-        ];
-
-        $this->solr = new Client($configuration);
     }
 
-    /**
-     * Register arguments.
-     *
-     * @return void
-     */
-    public function initializeArguments()
+    public function initialize(): void
+    {
+        $this->solr->connect();
+    }
+
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('query', 'string|array', 'Solr querystring or array of query fields and their query values.', true);
         $this->registerArgument('activeFacets', 'array', 'Array with active facets', false);
     }
 
-    public function render()
+    public function render(): void
     {
         $findParameter = $GLOBALS['TYPO3_REQUEST']->getParsedBody()['tx_find_find'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['tx_find_find'] ?? null;
 
@@ -95,12 +74,13 @@ class CountFromSolrViewHelper extends AbstractViewHelper
             $newQuery .= ' AND '.$queryConcat;
         }
 
-        $query = $this->createQuery($newQuery);
+        /** @var Query $query */
+        $query = $this->solr->getConnection()->createQuery($newQuery);
 
         $query->setRows(0);
 
         /** @var Result $resultSet */
-        $resultSet = $this->solr->select($query);
+        $resultSet = $this->solr->getConnection()->select($newQuery);
 
         $resultValue = $resultSet->getNumFound();
 
@@ -116,7 +96,7 @@ class CountFromSolrViewHelper extends AbstractViewHelper
      *
      * @param Query $query
      */
-    private function createQueryComponents(&$query)
+    private function createQueryComponents(&$query): void
     {
         // Shards
         if ($this->templateVariableContainer->get('settings')['shards'] && count($this->templateVariableContainer->get('settings')['shards'])) {
@@ -132,7 +112,7 @@ class CountFromSolrViewHelper extends AbstractViewHelper
      *
      * @param Query $query
      */
-    private function addTypoScriptFilters($query)
+    private function addTypoScriptFilters($query): void
     {
         if (!empty($this->templateVariableContainer->get('settings')['additionalFilters'])) {
             foreach ($this->templateVariableContainer->get('settings')['additionalFilters'] as $key => $filterQuery) {
@@ -144,20 +124,16 @@ class CountFromSolrViewHelper extends AbstractViewHelper
 
     /**
      * Creates a query for a document.
-     *
-     * @return Query
      */
-    private function createQuery($query)
+    private function createQuery($query): Query
     {
-        $queryObject = $this->solr->createSelect();
+        $queryObject = $this->solr->getConnection()->createSelect();
         $this->addTypoScriptFilters($queryObject);
 
         $queryObject->setQuery($query);
 
         $this->createQueryComponents($queryObject);
 
-        $this->configuration['solarium'] = $queryObject;
-
-        return $this->configuration['solarium'];
+        return $queryObject;
     }
 }

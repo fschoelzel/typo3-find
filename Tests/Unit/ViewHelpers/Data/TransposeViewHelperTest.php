@@ -15,15 +15,12 @@ class TransposeViewHelperTest extends BaseTestCase
 {
     public TransposeViewHelper|MockObject $fixture;
 
-    /**
-     * @var TransposeViewHelper
-     */
-    public $templateVariableContainer;
+    public TransposeViewHelper $templateVariableContainer;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->fixture = $this->getAccessibleMock(TransposeViewHelper::class, ['renderChildren']);
+        $this->fixture = $this->getMockBuilder(TransposeViewHelper::class)->getMock();
         $this->fixture->setRenderingContext($this->getMockBuilder(RenderingContext::class)->disableOriginalConstructor()->getMock());
     }
 
@@ -42,11 +39,12 @@ class TransposeViewHelperTest extends BaseTestCase
             ['horus' => 'h:rdr', 'behedeti' => 'h:rdr'],
         ];
 
+        $this->fixture->setArguments($arguments);
+
         $this->fixture->expects($this->any())
             ->method('renderChildren')
-            ->with($arguments)
             ->willReturn(['transpose' => $expected]);
-        $result = $this->fixture->renderChildren($arguments);
+        $result = $this->fixture->renderChildren();
         $this->assertArrayHasKey('transpose', $result);
         $this->assertEquals($expected, $result['transpose']);
     }
