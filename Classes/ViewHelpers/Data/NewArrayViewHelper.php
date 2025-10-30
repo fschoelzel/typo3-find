@@ -36,6 +36,8 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class NewArrayViewHelper extends AbstractViewHelper
 {
+    protected $escapeOutput = false;
+
     public function initializeArguments(): void
     {
         parent::initializeArguments();
