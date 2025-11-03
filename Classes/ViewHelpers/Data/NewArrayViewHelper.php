@@ -52,7 +52,7 @@ class NewArrayViewHelper extends AbstractViewHelper
         $this->registerArgument('omitEmptyFields', 'boolean', 'omits empty fields', false, false);
     }
 
-    public function render(): array
+    public function render(): void
     {
         $result = $this->arguments['array'] ?? [];
 
@@ -84,7 +84,5 @@ class NewArrayViewHelper extends AbstractViewHelper
                 $this->renderingContext->getVariableProvider()->remove($variableName);
             }
         }
-
-        return $result;
     }
 }
