@@ -70,4 +70,6 @@ interface ServiceProviderInterface
     public function setRequestArguments($requestArguments);
 
     public function suggestQuery($settings);
+
+    public function getConnection();
 }
